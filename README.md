@@ -328,6 +328,8 @@ vendor/bin/phpunit --coverage-html coverage/
 | **Error Handling** | Silent failures | Explicit exceptions |
 | **Testing** | Manual QA | PHPUnit automated (9 tests) |
 
+For more detailed comparision, please click here [Legacy_vs_Modernized_Comparision.md](https://github.com/chitrafegde55/PedalPalBikeRental/blob/modernization-enhancements/docs/Legacy_vs_Modernized_Comparision.md)
+
 ### UI/UX Enhancements
 
 ✅ **Home Page** - Gradient hero section with CTA buttons
@@ -356,12 +358,20 @@ vendor/bin/phpunit --coverage-html coverage/
 
 This project actively leveraged AI tools (GitHub Copilot for generating code, Claude Code for generating PRD and Specs) to accelerate development while maintaining quality and demonstrating strategic thinking.
 
+- Claude Usage for generating more specific and relevant specs and PRD documents.
+<img width="1821" height="853" alt="image" src="https://github.com/user-attachments/assets/6af6a738-ae5d-46c5-ad58-0aad9ed07375" />
+
+- GitHub Copilot is mostly used for generating and writing the code using VS Code editor and validating the changes.
+<img width="1858" height="943" alt="image" src="https://github.com/user-attachments/assets/f1f81602-f522-44f7-888b-751549521d5a" />
+
 ### Key AI-Assisted Areas
 
 **1. Architecture Design**
 - Recommended service-repository pattern
 - Suggested API-first separation of concerns
 - Guided clean architecture decisions
+
+Please find the [PRD](https://github.com/chitrafegde55/PedalPalBikeRental/blob/modernization-enhancements/docs/01_PedalPal_PRD.md) and [Architecture](https://github.com/chitrafegde55/PedalPalBikeRental/blob/modernization-enhancements/docs/02_PedalPal_Architecture.md) document here.
 
 **2. Service Layer Implementation**
 ```
@@ -402,6 +412,8 @@ Prompt: "Create modern CSS with gradients, responsive layout"
 - Smooth animations
 ```
 Result: 450+ lines, production-ready
+
+For more [prompts](https://github.com/chitrafegde55/PedalPalBikeRental/tree/modernization-enhancements/.github/prompts) and [instruction](https://github.com/chitrafegde55/PedalPalBikeRental/tree/modernization-enhancements/.github/instructions) click here.
 
 ### Prompting Best Practices Used
 
@@ -565,117 +577,3 @@ For questions or improvements:
 MIT License - Feel free to use for learning and projects
 
 ---
-
-**Last Updated**: April 2026 | **Version**: 2.0.0 (Modernized Edition)
-
-## Project Status: Phase 2 Complete ✅
-
-**Modernization Progress:**
-- ✅ Phase 0: Laravel 11 scaffold, DB migrations, Eloquent models, seeders
-- ✅ Phase 1: REST API endpoints, bundle logic, admin reset (authenticated)
-- ✅ Phase 2: Vue 3 SPA frontend with responsive design and API integration
-- ⏳ Phase 3: Admin panel, auth, polish, tests, documentation, final zip
-
-## Quick Start
-
-1. **Setup Database:**
-   ```bash
-   php setup-database.php
-   ```
-
-2. **Install Frontend Dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Build Frontend Assets:**
-   ```bash
-   npm run build
-   ```
-
-4. **Test API Endpoints:**
-   ```bash
-   php test-api.php
-   ```
-
-5. **Start Development Server:**
-   ```bash
-   php -S localhost:8080 -t public
-   ```
-   Visit `http://localhost:8080` for the full application
-
-## API Endpoints (Phase 1)
-
-### Bike Management
-- `GET /api/bikes?type=beach` - List beach cruisers
-- `GET /api/bikes?type=mountain` - List mountain bikes
-- `POST /api/bikes/{id}/rent` - Rent a specific bike
-
-### Accessory Management
-- `GET /api/accessories?bikeType={type}` - List accessories (filtered)
-- `POST /api/accessories/order` - Process accessory order with bundle discount
-
-### Admin Functions
-- `POST /api/admin/reset` - Reset all inventory to defaults
-
-All responses follow the consistent JSON envelope: `{success, data, message}`
-
-## Frontend Features (Phase 2)
-
-- **Homepage:** Welcome page with navigation
-- **Bike Catalog:** Filterable bike listings with rental functionality
-- **Accessory Shop:** Cart-based accessory ordering with bundle discounts
-- **Admin Dashboard:** Inventory reset functionality
-- **Responsive Design:** Mobile-friendly layout with CSS Grid
-- **Vue 3 Composition:** Modern reactive components with Vue Router
-
-## Architecture
-
-- **Backend:** Laravel 11 with Eloquent ORM
-- **Frontend:** Vue 3 SPA with Vue Router and Axios
-- **Build Tool:** Vite for fast development and optimized production builds
-- **Database:** SQLite (development) / MySQL (production)
-- **API:** RESTful with JSON responses
-
-## Features Implemented
-
-### Phase 1 Deliverables ✅
-- RESTful API controllers (`BikeController`, `AccessoryController`, `AdminController`)
-- Bike rental with availability checking
-- Accessory ordering with automatic bundle discount (10% off for Water Bottle + Bike Light)
-- Admin inventory reset functionality
-- Consistent error handling and response formatting
-- Database relationships and data integrity
-
-## Project Structure
-
-```
-├── app/
-│   ├── Http/Controllers/
-│   │   ├── BikeController.php
-│   │   ├── AccessoryController.php
-│   │   └── AdminController.php
-│   └── Models/
-│       ├── BeachCruiser.php
-│       ├── MountainBike.php
-│       └── Accessory.php
-├── database/
-│   ├── migrations/
-│   └── seeders/
-├── routes/
-│   └── api.php
-├── public/
-│   └── index.php
-└── docs/
-    ├── 01_PedalPal_PRD.md
-    └── 02_PedalPal_Architecture.md
-```
-
-## Next Steps
-
-**Phase 2: Vue 3 SPA Frontend**
-- Component library setup
-- Bike catalog pages
-- Accessory shop with cart
-- Admin dashboard
-- Responsive design implementation
