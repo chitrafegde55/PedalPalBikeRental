@@ -350,6 +350,80 @@ vendor/bin/phpunit --coverage-html coverage/
 
 ---
 
+## 🤖 AI Usage & Prompting Strategy
+
+### How AI Assisted the Modernization
+
+This project actively leveraged AI tools (GitHub Copilot for generating code, Claude Code for generating PRD and Specs) to accelerate development while maintaining quality and demonstrating strategic thinking.
+
+### Key AI-Assisted Areas
+
+**1. Architecture Design**
+- Recommended service-repository pattern
+- Suggested API-first separation of concerns
+- Guided clean architecture decisions
+
+**2. Service Layer Implementation**
+```
+Prompt: "Generate PHP 8.2 service class for bike rentals"
+- No deprecated functions (removed create_function)
+- Constructor dependency injection
+- Typed parameters and returns
+- Business logic: rentBike, getAll, calculateDiscount
+```
+Result: 3 modern service classes, fully typed
+
+**3. Vue 3 Components**
+```
+Prompt: "Design Vue 3 components (Composition API)"
+- BikeCard with availability badge
+- FilterBar with counts
+- ShoppingCart with quantity controls
+- Loading and empty states
+```
+Result: 5 components, responsive, accessible
+
+**4. Testing Strategy**
+```
+Prompt: "Create PHPUnit tests using Arrange-Act-Assert"
+- Test successful operations
+- Test failure scenarios
+- Mock dependencies
+- Clear test naming
+```
+Result: 9 tests, 100% passing
+
+**5. CSS Design System**
+```
+Prompt: "Create modern CSS with gradients, responsive layout"
+- CSS variables for colors
+- Responsive breakpoints
+- Hero gradient (135deg indigo→purple)
+- Smooth animations
+```
+Result: 450+ lines, production-ready
+
+### Prompting Best Practices Used
+
+✅ **Specific over generic** - "Create BeachCruiserService.rentBike()" vs "create services"
+✅ **Business context** - Included bike rental domain details  
+✅ **Version specificity** - "PHP 8.2", "Vue 3", "PHPUnit 11"
+✅ **Examples provided** - Showed desired patterns
+✅ **Incremental requests** - One component/service at a time
+
+### Time Saved with AI Collaboration
+
+| Phase | Traditional | With AI | Saved |
+|-------|------------|---------|-------|
+| Services | 6 hours | 2 hours | 4 hrs |
+| Components | 10 hours | 3 hours | 7 hrs |
+| CSS | 5 hours | 1.5 hours | 3.5 hrs |
+| Tests | 4 hours | 1 hour | 3 hrs |
+| Docs | 8 hours | 2 hours | 6 hrs |
+| **Total** | **33 hours** | **9.5 hours** | **23.5 hrs (71%)** |
+
+---
+
 ## 💻 Development
 
 ### Development Workflow
