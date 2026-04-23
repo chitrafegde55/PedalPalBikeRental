@@ -1,17 +1,16 @@
 {
-  "name": "pedalpal-bike-rentals",
-  "version": "1.0.0",
-  "description": "A PHP bike rental app that uses Node.js to start PHP. Node's contribution here is typing 'php -S localhost:8080' so you don't have to.",
-  "main": "watch.js",
-  "scripts": {
-    "start": "php -S localhost:8080",
-    "watch": "node watch.js"
-  },
-  "engines": {
-    "node": "14.x"
-  },
-  "dependencies": {},
-  "devDependencies": {},
-  "keywords": ["bikes", "php", "why-is-node-here"],
-  "license": "ISC"
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.0.0",
+        "axios": "^1.6.4",
+        "laravel-vite-plugin": "^1.0.0",
+        "vite": "^5.0.0",
+        "vue": "^3.4.0",
+        "vue-router": "^4.2.5"
+    }
 }

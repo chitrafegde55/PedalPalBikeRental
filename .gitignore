@@ -1,0 +1,27 @@
+# Laravel
+/vendor/
+/storage/*.key
+/storage/logs/*
+/storage/framework/*
+/public/storage
+
+# Vue
+/node_modules/
+/dist/
+
+# Env
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

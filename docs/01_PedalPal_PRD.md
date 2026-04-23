@@ -6,7 +6,7 @@
 |---|---|
 | Version | 1.0 |
 | Date | April 2026 |
-| Stack | Laravel 11 + Vue 3 + REST API |
+| Stack | Laravel 11 + Vue 3 + REST API + PHPUnit 13 |
 | Type | Modernization Assignment — Interview Deliverable |
 
 ---
@@ -58,6 +58,7 @@ A full audit of the legacy codebase reveals the following critical issues:
 - Eliminate all deprecated PHP 7 patterns and upgrade to PHP 8.2+
 - Resolve naming inconsistencies across data models
 - Implement CSRF protection, input validation, and proper error handling
+- Add comprehensive unit testing with PHPUnit 13 for all business logic components
 
 ### 3.2 Non-Goals (Out of Scope)
 
@@ -126,6 +127,10 @@ The functional requirements below are organized into feature groups and numbered
 - FRS-26: `POST /api/accessories/order` — process accessory order
 - FRS-27: `POST /api/admin/reset` — reset all data (authenticated)
 - FRS-28: All API responses must use a consistent JSON envelope `{ success, data, message }`
+- FRS-29: Implement comprehensive unit tests using PHPUnit 13 for all service classes
+- FRS-30: Implement unit tests for repository classes with mocked file system operations
+- FRS-31: Implement unit tests for controller classes with mocked dependencies
+- FRS-32: Achieve minimum 80% code coverage for critical business logic components
 
 ---
 
@@ -215,6 +220,13 @@ The stories are grouped into feature areas and then broken into smaller slices f
 - Given I call `/api/admin/reset` without auth, I receive HTTP 401 Unauthorized
 - Authenticated staff can perform approved admin actions
 
+**US-15:** As a developer, I want comprehensive unit tests so I can safely refactor and extend the codebase.
+- Given I run `vendor/bin/phpunit`, all unit tests pass with mocked dependencies
+- Service layer tests validate business logic without external dependencies
+- Repository tests validate data operations with mocked file system
+- Controller tests validate API responses with mocked models and requests
+- Test coverage meets the minimum 80% requirement for critical components
+
 ### 7.1 Feature & Story Sharding
 
 This PRD uses the following story partitioning approach:
@@ -232,29 +244,7 @@ This PRD uses the following story partitioning approach:
 | Phase 0 | Week 1 | Project setup: Laravel 11 scaffold, DB migrations, Eloquent models, seeders | Planned |
 | Phase 1 | Week 2 | REST API: bike & accessory endpoints, bundle logic, admin reset (authenticated) | Planned |
 | Phase 2 | Week 3 | Vue 3 SPA: component library, bike catalog, accessories shop, cart | Planned |
-| Phase 3 | Week 4 | Admin panel, auth, polish, tests, documentation, final zip | Planned |
-
----
-
-## 9. Assumptions & Constraints
-
-- The assignment is treated as a single-developer project; CI/CD pipelines are out of scope
-- SQLite can be used locally; MySQL in production is the target
-- The bundle discount IDs (1 & 3) are configurable via `.env` or config file, not hardcoded
-- Authentication is session-based for the admin panel (not customer-facing auth)
-- Beach Cruiser data format (XML) will be migrated to the database; no XML in production
-- All API responses follow the envelope: `{ success: bool, data: mixed, message: string }`
-
----
-
-## 8. Release Milestones
-
-| Phase | Target | Deliverables | Status |
-|---|---|---|---|
-| Phase 0 | Week 1 | Project setup: Laravel 11 scaffold, DB migrations, Eloquent models, seeders | Planned |
-| Phase 1 | Week 2 | REST API: bike & accessory endpoints, bundle logic, admin reset (authenticated) | Planned |
-| Phase 2 | Week 3 | Vue 3 SPA: component library, bike catalog, accessories shop, cart | Planned |
-| Phase 3 | Week 4 | Admin panel, auth, polish, tests, documentation, final zip | Planned |
+| Phase 3 | Week 4 | Admin panel, auth, polish, PHPUnit 13 unit tests, documentation, final zip | Planned |
 
 ---
 

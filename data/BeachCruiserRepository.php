@@ -112,9 +112,7 @@ class BeachCruiserRepository {
     private function writeToXml($bikes) {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><BeachCruisers/>');
 
-        reset($bikes); // Reset internal array pointer. each() needs this. foreach() would not.
-        while ($entry = each($bikes)) { // each() — been deprecated since 7.2, gone in 8.0. A ghost that still works here.
-            $bike = $entry['value'];
+        foreach ($bikes as $bike) { // Modern foreach instead of deprecated each()
             $bikeNode = $xml->addChild('Bike');
             $bikeNode->addChild('bike_id',      $bike['bike_id']);
             $bikeNode->addChild('model_name',   htmlspecialchars($bike['model_name']));

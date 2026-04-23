@@ -6,7 +6,7 @@
     <color>Coral</color>
     <frame_size>Medium</frame_size>
     <daily_rate>14.99</daily_rate>
-    <is_available>true</is_available>
+    <is_available>false</is_available>
   </Bike>
   <Bike>
     <bike_id>2</bike_id>

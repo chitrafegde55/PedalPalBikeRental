@@ -5,7 +5,7 @@
         "Category": "Hydration",
         "Description": "Keeps your water cold and your excuses for stopping minimal.",
         "UnitPrice": 2.99,
-        "StockCount": 15,
+        "StockCount": 12,
         "CompatibleWith": [
             "mountain",
             "beach"

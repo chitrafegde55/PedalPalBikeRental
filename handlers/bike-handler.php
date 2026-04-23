@@ -100,11 +100,7 @@ switch ($action) {
         break;
 
     case 'rent':
-        // POST: rent a bike. Read JSON from request body.
-        // Note the @ before json_decode. The @ operator suppresses errors.
-        // It has been frowned upon since approximately PHP 4. It is here anyway.
-        // It's the duct tape of PHP error handling: you know you shouldn't, but it holds.
-        // We check json_last_error() nowhere. The @ just absorbs the screaming. Serene.
+        // POST: rent a bike. Read JSON from request body or GET parameters.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo json_encode(['Success' => false, 'Message' => 'Method not allowed. POST only. This is not negotiable.']);
@@ -114,10 +110,9 @@ switch ($action) {
         $body = file_get_contents('php://input');
         $data = @json_decode($body, true); // @ suppresses the parse error warning. Feels wrong. Works.
 
+        // If no valid JSON body, try to get data from GET parameters (for API routing)
         if ($data === null) {
-            http_response_code(400);
-            echo json_encode(['Success' => false, 'Message' => 'Invalid JSON in request body.']);
-            break;
+            $data = $_GET;
         }
 
         $bikeType = isset($data['bikeType']) ? $data['bikeType'] : '';
