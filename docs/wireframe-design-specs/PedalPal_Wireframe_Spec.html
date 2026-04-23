@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PedalPal — Wireframe Spec</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0F0F0F;
+  color: #E8E4DC;
+  min-height: 100vh;
+}
+
+/* ── DESIGN TOKENS ────────────────────────────────────────── */
+:root {
+  --primary:   #6C63FF;
+  --primary-lt:#EEEdFE;
+  --primary-dk:#3C34A0;
+  --green:     #3B9B5E;
+  --green-lt:  #D4F0E0;
+  --red:       #D94F4F;
+  --red-lt:    #FDEAEA;
+  --amber:     #D97706;
+  --amber-lt:  #FEF3C7;
+  --surf:      #1A1A1A;
+  --surf2:     #222222;
+  --surf3:     #2A2A2A;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --txt:       #E8E4DC;
+  --txt2:      #9E9A94;
+  --txt3:      #5E5A56;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow:    0 1px 3px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.3);
+}
+
+/* ── CANVAS CHROME ────────────────────────────────────────── */
+.toolbar {
+  position: sticky; top: 0; z-index: 100;
+  height: 48px;
+  background: #161616;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0;
+  padding: 0 20px;
+}
+.toolbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 600; font-size: 14px; letter-spacing: -0.3px;
+  color: var(--txt);
+  margin-right: 32px;
+}
+.toolbar-logo .logo-dot {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+}
+.toolbar-logo .logo-dot svg { width: 16px; height: 16px; }
+.tb-sep { width: 1px; height: 20px; background: var(--border2); margin: 0 16px; }
+.tb-chips { display: flex; gap: 4px; }
+.tb-chip {
+  font-size: 12px; padding: 4px 12px; border-radius: 20px;
+  border: 1px solid transparent; cursor: pointer;
+  color: var(--txt2); transition: all .15s;
+}
+.tb-chip:hover { color: var(--txt); border-color: var(--border2); }
+.tb-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.tb-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.tb-badge {
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  background: var(--surf3); color: var(--txt2);
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+/* ── MAIN CANVAS ──────────────────────────────────────────── */
+.canvas {
+  padding: 48px 32px;
+  display: flex; flex-direction: column; gap: 80px;
+  max-width: 1280px; margin: 0 auto;
+}
+
+/* ── SECTION WRAPPER ──────────────────────────────────────── */
+.wf-section {
+  display: flex; flex-direction: column; gap: 0;
+}
+.section-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 20px;
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--txt3);
+  width: 28px; text-align: right;
+}
+.section-title-outer {
+  font-size: 13px; font-weight: 500;
+  color: var(--txt2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.section-line {
+  flex: 1; height: 1px; background: var(--border);
+}
+.section-tag {
+  font-size: 10px; font-family: 'DM Mono', monospace;
+  color: var(--txt3);
+  background: var(--surf2); border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: 4px;
+}
+
+/* ── FRAME SHELL ──────────────────────────────────────────── */
+.frame-wrap {
+  display: flex; gap: 28px; align-items: flex-start;
+}
+.frame-shell {
+  flex: 1;
+  background: #F5F3EF;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,0.04);
+  color: #1A1A1A;
+}
+.frame-shell * { box-sizing: border-box; }
+.frame-label {
+  position: relative;
+}
+.frame-label::before {
+  content: attr(data-w) ' × ' attr(data-h);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--txt3);
+  display: block; margin-bottom: 6px;
+}
+
+/* ── ANNOTATION PANEL ─────────────────────────────────────── */
+.anno-panel {
+  width: 240px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.anno-card {
+  background: var(--surf2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+.anno-card-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--txt3); font-family: 'DM Mono', monospace;
+  margin-bottom: 10px;
+}
+.anno-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 12px; padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.anno-row:last-child { border-bottom: none; }
+.anno-key { color: var(--txt2); }
+.anno-val {
+  font-family: 'DM Mono', monospace;
+  color: var(--txt); font-size: 11px;
+}
+.anno-val.purple { color: #9B95FF; }
+.anno-val.green  { color: #6BCF95; }
+.anno-val.red    { color: #F08080; }
+.anno-note {
+  font-size: 11px; color: var(--txt2); line-height: 1.6;
+}
+.anno-component {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.anno-component:last-child { border-bottom: none; }
+.anno-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* ── COLORS DOC ───────────────────────────────────────────── */
+.colors-grid {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.color-swatch {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.swatch-block {
+  width: 64px; height: 64px; border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.swatch-info { text-align: center; }
+.swatch-name { font-size: 11px; font-weight: 500; color: var(--txt); }
+.swatch-hex  { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--txt3); }
+
+/* ── TYPOGRAPHY DOC ───────────────────────────────────────── */
+.type-row {
+  display: flex; gap: 20px; align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.type-row:last-child { border-bottom: none; }
+.type-meta { width: 160px; flex-shrink: 0; }
+.type-meta-tag { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--txt3); }
+.type-meta-spec { font-size: 11px; color: var(--txt2); margin-top: 2px; }
+.type-preview { flex: 1; color: var(--txt); }
+
+/* ── SPACING DOC ──────────────────────────────────────────── */
+.spacing-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.spacing-row:last-child { border-bottom: none; }
+.spacing-bar { height: 8px; background: var(--primary); border-radius: 2px; opacity: 0.6; }
+.spacing-label { font-family: 'DM Mono', monospace; color: var(--txt2); font-size: 11px; width: 48px; }
+.spacing-val { color: var(--txt3); font-size: 11px; }
+
+/* ─────────────────────────────────────────────────────────── */
+/*   IN-FRAME COMPONENT STYLES (light bg context)             */
+/* ─────────────────────────────────────────────────────────── */
+.f-nav {
+  display: flex; align-items: center;
+  height: 52px; padding: 0 24px;
+  background: #fff;
+  border-bottom: 1px solid #E8E4DC;
+}
+.f-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 600; font-size: 15px; color: #1A1A1A;
+  margin-right: 32px;
+}
+.f-logo-mark {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: #6C63FF;
+  display: flex; align-items: center; justify-content: center;
+}
+.f-logo-mark svg { width: 16px; height: 16px; }
+.f-nav-links { display: flex; gap: 4px; }
+.f-nav-link {
+  font-size: 13px; padding: 5px 12px; border-radius: 6px;
+  color: #6B6760; cursor: pointer;
+}
+.f-nav-link.active {
+  background: #EEEDFE; color: #3C34A0; font-weight: 500;
+}
+.f-nav-right { margin-left: auto; }
+.f-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; padding: 6px 16px;
+  border-radius: 8px; border: 1px solid #D4D0C8;
+  background: #fff; color: #3A3830; cursor: pointer;
+  font-weight: 500;
+}
+.f-btn-primary {
+  background: #6C63FF; color: #fff; border-color: #6C63FF;
+}
+.f-btn-danger {
+  background: #D94F4F; color: #fff; border-color: #D94F4F;
+}
+.f-btn-sm { font-size: 11px; padding: 4px 12px; border-radius: 6px; }
+.f-badge {
+  display: inline-flex; align-items: center;
+  font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 20px;
+}
+.f-badge-green { background: #D4F0E0; color: #1E6B3A; }
+.f-badge-red   { background: #FDEAEA; color: #8B2020; }
+.f-badge-purple{ background: #EEEDFE; color: #3C34A0; }
+.f-badge-gray  { background: #ECEAE4; color: #5A5750; }
+.f-badge-amber { background: #FEF3C7; color: #854F0B; }
+.f-hero {
+  padding: 56px 24px 40px;
+  text-align: center;
+  background: #F5F3EF;
+}
+.f-hero h1 { font-size: 32px; font-weight: 600; color: #1A1A1A; letter-spacing: -0.5px; margin-bottom: 8px; }
+.f-hero p  { font-size: 14px; color: #6B6760; margin-bottom: 28px; }
+.f-hero-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; max-width: 520px; margin: 0 auto;
+}
+.f-hcard {
+  background: #fff; border-radius: 14px;
+  border: 1px solid #E8E4DC;
+  padding: 24px 20px; text-align: center;
+}
+.f-hcard-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.f-hcard h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #1A1A1A; }
+.f-hcard p  { font-size: 12px; color: #7A766E; margin-bottom: 16px; line-height: 1.5; }
+
+/* filter bar */
+.f-filter {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: #fff;
+  border-bottom: 1px solid #E8E4DC; flex-wrap: wrap;
+}
+.f-search {
+  flex: 1; min-width: 180px;
+  display: flex; align-items: center; gap: 8px;
+  background: #F5F3EF; border: 1px solid #E0DDD6;
+  border-radius: 8px; padding: 6px 12px;
+}
+.f-search input {
+  border: none; background: transparent; outline: none;
+  font-size: 12px; font-family: 'DM Sans', sans-serif;
+  color: #1A1A1A; width: 100%;
+}
+.f-search svg { width: 14px; height: 14px; color: #9E9A94; flex-shrink: 0; }
+.f-chip {
+  font-size: 12px; padding: 5px 12px; border-radius: 20px;
+  border: 1px solid #E0DDD6; cursor: pointer;
+  color: #6B6760; background: #fff;
+}
+.f-chip.active {
+  background: #EEEDFE; border-color: #B8B4F8; color: #3C34A0; font-weight: 500;
+}
+.f-select {
+  font-size: 12px; padding: 5px 10px;
+  border: 1px solid #E0DDD6; border-radius: 8px;
+  background: #F5F3EF; color: #3A3830;
+  font-family: 'DM Sans', sans-serif;
+}
+.f-count { font-size: 11px; color: #9E9A94; padding: 6px 24px; background: #F5F3EF; }
+
+/* bike cards */
+.f-bike-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; padding: 16px 24px;
+  background: #F5F3EF;
+}
+.f-bike-card {
+  background: #fff; border-radius: 12px;
+  border: 1px solid #E8E4DC; padding: 16px;
+}
+.f-bike-card.rented { opacity: 0.6; }
+.f-bc-head {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; margin-bottom: 12px;
+}
+.f-bc-name { font-size: 14px; font-weight: 600; color: #1A1A1A; }
+.f-bc-brand { font-size: 11px; color: #9E9A94; margin-top: 2px; }
+.f-bike-img {
+  height: 72px; background: #F5F3EF; border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.f-bike-img svg { width: 40px; height: 40px; opacity: 0.18; }
+.f-specs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; margin-bottom: 12px;
+}
+.f-spec-k { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #9E9A94; }
+.f-spec-v { font-size: 12px; font-weight: 500; color: #1A1A1A; }
+.f-bc-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 12px; border-top: 1px solid #EAE8E2;
+}
+.f-price { font-size: 16px; font-weight: 600; color: #6C63FF; }
+.f-price span { font-size: 11px; color: #9E9A94; font-weight: 400; }
+
+/* modal */
+.f-modal-overlay {
+  background: rgba(15,15,15,0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px;
+  min-height: 360px;
+}
+.f-modal {
+  background: #fff; border-radius: 16px;
+  padding: 24px; width: 340px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+.f-modal-head {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 16px;
+}
+.f-modal-title { font-size: 16px; font-weight: 600; color: #1A1A1A; }
+.f-modal-close {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid #E0DDD6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #6B6760; cursor: pointer;
+}
+.f-modal-info {
+  background: #F5F3EF; border-radius: 10px;
+  padding: 14px; margin-bottom: 16px;
+}
+.f-modal-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.f-modal-info .sub { font-size: 11px; color: #9E9A94; margin-bottom: 10px; }
+.f-modal-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.f-mspec { font-size: 12px; color: #6B6760; }
+.f-mspec strong { color: #1A1A1A; }
+.f-modal-note { font-size: 12px; color: #6B6760; margin-bottom: 16px; line-height: 1.6; }
+.f-modal-actions { display: flex; gap: 10px; }
+.f-modal-actions .f-btn { flex: 1; }
+
+/* accessories */
+.f-acc-layout { display: grid; grid-template-columns: 1fr 280px; background: #F5F3EF; }
+.f-acc-main { padding: 16px 24px; }
+.f-acc-sidebar {
+  background: #fff; border-left: 1px solid #E8E4DC;
+  padding: 20px;
+}
+.f-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.f-acc-card {
+  background: #fff; border-radius: 10px;
+  border: 1px solid #E8E4DC; padding: 14px;
+}
+.f-acc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.f-acc-name { font-size: 13px; font-weight: 600; color: #1A1A1A; }
+.f-acc-desc { font-size: 11px; color: #7A766E; margin-bottom: 10px; line-height: 1.4; }
+.f-acc-foot { display: flex; justify-content: space-between; align-items: center; }
+.f-acc-price { font-size: 13px; font-weight: 600; color: #1A1A1A; }
+.f-qty { display: flex; align-items: center; gap: 8px; }
+.f-qty-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: 1px solid #E0DDD6; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: #3A3830; cursor: pointer;
+}
+.f-qty-val { font-size: 13px; font-weight: 500; min-width: 16px; text-align: center; }
+.f-acc-stock { font-size: 10px; color: #9E9A94; margin-top: 6px; }
+.f-cart-title { font-size: 14px; font-weight: 600; color: #1A1A1A; margin-bottom: 14px; }
+.f-bundle-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #D4F0E0; color: #1E6B3A;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 20px;
+  margin-bottom: 14px;
+}
+.f-cart-item {
+  display: flex; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid #EAE8E2;
+  font-size: 12px; color: #3A3830;
+}
+.f-cart-item-price { font-weight: 500; }
+.f-summary { margin-top: 14px; }
+.f-summary-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px; padding: 4px 0; color: #6B6760;
+}
+.f-summary-row.discount { color: #1E6B3A; }
+.f-summary-row.total {
+  font-size: 14px; font-weight: 600; color: #1A1A1A;
+  border-top: 1px solid #E8E4DC; margin-top: 8px; padding-top: 10px;
+}
+
+/* admin */
+.f-admin-layout { display: grid; grid-template-columns: 200px 1fr; min-height: 400px; }
+.f-admin-sidebar {
+  background: #fff; border-right: 1px solid #E8E4DC;
+  padding: 16px 0;
+}
+.f-admin-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; font-size: 13px; cursor: pointer;
+  color: #6B6760;
+}
+.f-admin-nav-item.active {
+  background: #EEEDFE; color: #3C34A0; font-weight: 500;
+}
+.f-admin-nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.f-admin-sep { height: 1px; background: #EAE8E2; margin: 8px 0; }
+.f-admin-main { padding: 24px; background: #F5F3EF; }
+.f-admin-page-title { font-size: 18px; font-weight: 600; color: #1A1A1A; margin-bottom: 20px; }
+.f-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.f-stat-card { background: #fff; border-radius: 10px; border: 1px solid #E8E4DC; padding: 16px; }
+.f-stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #9E9A94; margin-bottom: 6px; }
+.f-stat-val { font-size: 28px; font-weight: 600; color: #1A1A1A; }
+.f-stat-val.purple { color: #6C63FF; }
+.f-stat-val.green  { color: #3B9B5E; }
+.f-section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #9E9A94; margin-bottom: 10px; font-weight: 500; }
+.f-table { width: 100%; border-collapse: collapse; font-size: 12px; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #E8E4DC; }
+.f-table th {
+  text-align: left; padding: 10px 14px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #9E9A94; border-bottom: 1px solid #EAE8E2; font-weight: 500;
+}
+.f-table td { padding: 10px 14px; border-bottom: 1px solid #EAE8E2; color: #1A1A1A; }
+.f-table tr:last-child td { border-bottom: none; }
+.f-table td:last-child { text-align: right; }
+.f-danger-zone {
+  background: #fff; border-radius: 10px;
+  border: 1px solid #F5C0C0;
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px;
+}
+.f-danger-zone strong { display: block; font-size: 13px; font-weight: 600; color: #1A1A1A; margin-bottom: 2px; }
+.f-danger-zone p { font-size: 12px; color: #6B6760; }
+
+/* login */
+.f-login-wrap {
+  display: flex; align-items: center; justify-content: center;
+  padding: 56px 24px; background: #F5F3EF; min-height: 360px;
+}
+.f-login-card { width: 300px; }
+.f-login-card h2 { font-size: 22px; font-weight: 600; color: #1A1A1A; margin-bottom: 4px; }
+.f-login-card .sub { font-size: 13px; color: #6B6760; margin-bottom: 24px; }
+.f-field { margin-bottom: 14px; }
+.f-field label { display: block; font-size: 11px; font-weight: 500; color: #6B6760; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+.f-field input {
+  width: 100%; font-size: 13px; padding: 9px 12px;
+  border: 1px solid #D4D0C8; border-radius: 8px;
+  background: #fff; color: #1A1A1A;
+  font-family: 'DM Sans', sans-serif; outline: none;
+}
+
+/* toast */
+.f-toast-area { padding: 20px 24px; background: #F5F3EF; display: flex; gap: 14px; flex-wrap: wrap; }
+.f-toast {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #fff; border-radius: 10px;
+  border: 1px solid #E8E4DC;
+  padding: 12px 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  min-width: 240px; max-width: 300px;
+}
+.f-toast-icon {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.f-toast-body { flex: 1; }
+.f-toast-body strong { display: block; font-size: 13px; font-weight: 600; color: #1A1A1A; margin-bottom: 2px; }
+.f-toast-body span { font-size: 12px; color: #6B6760; }
+.f-toast-success { border-left: 3px solid #3B9B5E; }
+.f-toast-error   { border-left: 3px solid #D94F4F; }
+.f-toast-info    { border-left: 3px solid #6C63FF; }
+
+/* ── SPEC DOCS SECTION ────────────────────────────────────── */
+.spec-docs-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+.spec-doc-card {
+  background: var(--surf2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.spec-doc-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--txt3); font-family: 'DM Mono', monospace;
+  margin-bottom: 16px;
+}
+
+/* ── COMPONENT INVENTORY ──────────────────────────────────── */
+.comp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.comp-item {
+  background: var(--surf2); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.comp-item-tag {
+  font-size: 10px; font-family: 'DM Mono', monospace;
+  color: var(--txt3);
+}
+.comp-item-name { font-size: 13px; font-weight: 500; color: var(--txt); }
+.comp-item-desc { font-size: 11px; color: var(--txt2); line-height: 1.5; }
+.comp-item-props { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.comp-prop {
+  font-size: 10px; font-family: 'DM Mono', monospace;
+  background: var(--surf3); color: var(--txt3);
+  padding: 2px 6px; border-radius: 4px;
+}
+
+/* ── API ENDPOINTS ────────────────────────────────────────── */
+.api-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.api-table th {
+  text-align: left; padding: 8px 0;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--txt3); border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+}
+.api-table td { padding: 9px 0; border-bottom: 1px solid var(--border); color: var(--txt2); }
+.api-table tr:last-child td { border-bottom: none; }
+.method {
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  padding: 2px 7px; border-radius: 4px;
+}
+.method-get    { background: #163B26; color: #6BCF95; }
+.method-post   { background: #1E2A4A; color: #7AADFF; }
+.method-patch  { background: #2A1E3A; color: #B89EFF; }
+.endpoint-path { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--txt); }
+.auth-lock { font-size: 11px; }
+
+/* section dividers */
+.page-section-title {
+  font-size: 22px; font-weight: 600; color: var(--txt);
+  letter-spacing: -0.5px; margin-bottom: 4px;
+}
+.page-section-sub { font-size: 13px; color: var(--txt2); }
+</style>
+</head>
+<body>
+
+<!-- ── TOOLBAR ──────────────────────────────────────────────── -->
+<div class="toolbar">
+  <div class="toolbar-logo">
+    <div class="logo-dot">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/>
+        <circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/>
+        <path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    PedalPal
+  </div>
+  <div class="tb-sep"></div>
+  <div style="font-size:12px;color:var(--txt3);">Wireframe Spec &amp; Design System</div>
+  <div class="tb-sep"></div>
+  <div class="tb-chips">
+    <div class="tb-chip active" onclick="scrollTo(0,0)">Screens</div>
+    <div class="tb-chip" onclick="document.getElementById('design-system').scrollIntoView({behavior:'smooth'})">Design System</div>
+    <div class="tb-chip" onclick="document.getElementById('components').scrollIntoView({behavior:'smooth'})">Components</div>
+    <div class="tb-chip" onclick="document.getElementById('api').scrollIntoView({behavior:'smooth'})">API</div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-badge">v1.0 · April 2026</div>
+    <div class="tb-badge">Laravel 11 + Vue 3</div>
+  </div>
+</div>
+
+<!-- ── CANVAS ───────────────────────────────────────────────── -->
+<div class="canvas">
+
+  <!-- ─────────────── SCREEN 1: HOMEPAGE ──────────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title-outer">Homepage / Landing</span>
+      <div class="section-line"></div>
+      <span class="section-tag">HomeView.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="1280" data-h="auto"></div>
+        <div class="frame-shell">
+          <div class="f-nav">
+            <div class="f-logo">
+              <div class="f-logo-mark">
+                <svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              PedalPal
+            </div>
+            <div class="f-nav-links">
+              <div class="f-nav-link active">Beach Cruisers</div>
+              <div class="f-nav-link">Mountain Bikes</div>
+              <div class="f-nav-link">Accessories</div>
+            </div>
+            <div class="f-nav-right">
+              <div class="f-btn f-btn-sm">Staff login</div>
+            </div>
+          </div>
+          <div class="f-hero">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#9E9A94;margin-bottom:10px;">Bike Rentals · Est. 2008</div>
+            <h1>Choose your adventure</h1>
+            <p>Pedals provided. Excuses are extra.</p>
+            <div class="f-hero-cards">
+              <div class="f-hcard">
+                <div class="f-hcard-icon" style="background:#FBEAF0;">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="17" r="3" stroke="#D4537E" stroke-width="1.5"/><circle cx="19" cy="17" r="3" stroke="#D4537E" stroke-width="1.5"/><path d="M5 17l5-8 4 5 3-5" stroke="#D4537E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Beach Cruisers</h3>
+                <p>Wide tires, laid-back frames, perfect for the boardwalk and gentle existential crises.</p>
+                <div class="f-btn f-btn-primary f-btn-sm" style="width:100%;">Browse Beach Cruisers →</div>
+              </div>
+              <div class="f-hcard">
+                <div class="f-hcard-icon" style="background:#EEEDFE;">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="17" r="3" stroke="#6C63FF" stroke-width="1.5"/><circle cx="19" cy="17" r="3" stroke="#6C63FF" stroke-width="1.5"/><path d="M5 17l5-8 4 5 3-5" stroke="#6C63FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Mountain Bikes</h3>
+                <p>Suspension forks, aggressive geometry, enough gears to confuse anyone who hates flat.</p>
+                <div class="f-btn f-btn-sm" style="width:100%;background:#6C63FF;color:#fff;border-color:#6C63FF;">Browse Mountain Bikes →</div>
+              </div>
+            </div>
+            <div style="margin-top:20px;font-size:12px;color:#9E9A94;">Also available: <a href="#" style="color:#6C63FF;text-decoration:none;">Accessories shop →</a></div>
+          </div>
+          <div style="background:#fff;border-top:1px solid #E8E4DC;padding:14px 24px;text-align:center;font-size:11px;color:#9E9A94;">
+            PedalPal © 2026 · All bikes should be real · All prices may vary
+          </div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Layout</div>
+          <div class="anno-row"><span class="anno-key">Max width</span><span class="anno-val">1280px</span></div>
+          <div class="anno-row"><span class="anno-key">Navbar height</span><span class="anno-val">52px</span></div>
+          <div class="anno-row"><span class="anno-key">Hero padding</span><span class="anno-val">56px 24px</span></div>
+          <div class="anno-row"><span class="anno-key">Card gap</span><span class="anno-val">14px</span></div>
+          <div class="anno-row"><span class="anno-key">Card radius</span><span class="anno-val">14px</span></div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Components</div>
+          <div class="anno-component"><div class="anno-dot" style="background:#6C63FF;"></div><span>AppNav.vue</span></div>
+          <div class="anno-component"><div class="anno-dot" style="background:#D4537E;"></div><span>HeroSection.vue</span></div>
+          <div class="anno-component"><div class="anno-dot" style="background:#3B9B5E;"></div><span>CategoryCard.vue</span></div>
+          <div class="anno-component"><div class="anno-dot" style="background:#9E9A94;"></div><span>AppFooter.vue</span></div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Notes</div>
+          <div class="anno-note">Nav "Staff login" links to <code style="font-size:10px;font-family:DM Mono,monospace;">/admin/login</code>. No auth state shown on public pages. Vue Router handles SPA navigation — no page reloads.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 2: BEACH CRUISERS ─────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title-outer">Beach Cruiser Catalog</span>
+      <div class="section-line"></div>
+      <span class="section-tag">BeachCruisersView.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="1280" data-h="auto"></div>
+        <div class="frame-shell">
+          <div class="f-nav">
+            <div class="f-logo"><div class="f-logo-mark"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+            <div class="f-nav-links">
+              <div class="f-nav-link active">Beach Cruisers</div>
+              <div class="f-nav-link">Mountain Bikes</div>
+              <div class="f-nav-link">Accessories</div>
+            </div>
+            <div class="f-nav-right"><div class="f-btn f-btn-sm">Staff login</div></div>
+          </div>
+          <div class="f-filter">
+            <div class="f-search">
+              <svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10.5 10.5L13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" placeholder="Search bikes…" />
+            </div>
+            <div class="f-chip active">All</div>
+            <div class="f-chip">Available only</div>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <select class="f-select"><option>Frame size: All</option><option>Small</option><option>Medium</option><option>Large</option></select>
+              <select class="f-select"><option>Color: All</option><option>Coral</option><option>Teal</option><option>Cream</option></select>
+              <select class="f-select"><option>Sort: Default</option><option>Price ↑</option><option>Price ↓</option></select>
+            </div>
+          </div>
+          <div class="f-count">Showing 6 bikes &nbsp;·&nbsp; 4 available</div>
+          <div class="f-bike-grid">
+            <div class="f-bike-card">
+              <div class="f-bc-head"><div><div class="f-bc-name">Sunset Drifter</div></div><div class="f-badge f-badge-green">Available</div></div>
+              <div class="f-bike-img"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 24l8-14 8 8 8-10" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-specs">
+                <div><div class="f-spec-k">Color</div><div class="f-spec-v">Coral</div></div>
+                <div><div class="f-spec-k">Frame</div><div class="f-spec-v">Medium</div></div>
+              </div>
+              <div class="f-bc-foot"><div class="f-price">$14.99<span>/day</span></div><div class="f-btn f-btn-primary f-btn-sm">Rent now</div></div>
+            </div>
+            <div class="f-bike-card">
+              <div class="f-bc-head"><div><div class="f-bc-name">Ocean Breeze</div></div><div class="f-badge f-badge-green">Available</div></div>
+              <div class="f-bike-img"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 24l8-14 8 8 8-10" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-specs">
+                <div><div class="f-spec-k">Color</div><div class="f-spec-v">Teal</div></div>
+                <div><div class="f-spec-k">Frame</div><div class="f-spec-v">Large</div></div>
+              </div>
+              <div class="f-bc-foot"><div class="f-price">$16.99<span>/day</span></div><div class="f-btn f-btn-primary f-btn-sm">Rent now</div></div>
+            </div>
+            <div class="f-bike-card rented">
+              <div class="f-bc-head"><div><div class="f-bc-name">Sandy Shores</div></div><div class="f-badge f-badge-red">Rented</div></div>
+              <div class="f-bike-img"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 24l8-14 8 8 8-10" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-specs">
+                <div><div class="f-spec-k">Color</div><div class="f-spec-v">Cream</div></div>
+                <div><div class="f-spec-k">Frame</div><div class="f-spec-v">Small</div></div>
+              </div>
+              <div class="f-bc-foot"><div class="f-price">$12.99<span>/day</span></div><div class="f-btn f-btn-sm" style="color:#9E9A94;cursor:default;">Not available</div></div>
+            </div>
+          </div>
+          <div style="height:8px;background:#F5F3EF;"></div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Grid specs</div>
+          <div class="anno-row"><span class="anno-key">Columns</span><span class="anno-val">3 (auto-fit)</span></div>
+          <div class="anno-row"><span class="anno-key">Card gap</span><span class="anno-val">14px</span></div>
+          <div class="anno-row"><span class="anno-key">Card padding</span><span class="anno-val">16px</span></div>
+          <div class="anno-row"><span class="anno-key">Image height</span><span class="anno-val">72px</span></div>
+          <div class="anno-row"><span class="anno-key">Rented opacity</span><span class="anno-val">0.6</span></div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">API call</div>
+          <div class="anno-note"><code style="font-family:DM Mono,monospace;font-size:11px;color:#9B95FF;">GET /api/bikes?type=beach</code><br/><br/>On mount, Pinia store fetches. Filter chips and dropdowns update computed list client-side — no re-fetch on filter change.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">States</div>
+          <div class="anno-row"><span class="anno-key">Loading</span><span class="anno-val">AppSpinner</span></div>
+          <div class="anno-row"><span class="anno-key">Empty</span><span class="anno-val">AppEmptyState</span></div>
+          <div class="anno-row"><span class="anno-key">Error</span><span class="anno-val">AppToast (error)</span></div>
+          <div class="anno-row"><span class="anno-key">Post-rent</span><span class="anno-val">card flips red</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 3: MOUNTAIN BIKES ─────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title-outer">Mountain Bike Catalog</span>
+      <div class="section-line"></div>
+      <span class="section-tag">MountainBikesView.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="1280" data-h="auto"></div>
+        <div class="frame-shell">
+          <div class="f-nav">
+            <div class="f-logo"><div class="f-logo-mark"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+            <div class="f-nav-links">
+              <div class="f-nav-link">Beach Cruisers</div>
+              <div class="f-nav-link active">Mountain Bikes</div>
+              <div class="f-nav-link">Accessories</div>
+            </div>
+            <div class="f-nav-right"><div class="f-btn f-btn-sm">Staff login</div></div>
+          </div>
+          <div class="f-filter">
+            <div class="f-search"><svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10.5 10.5L13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="text" placeholder="Search mountain bikes…" /></div>
+            <div class="f-chip active">All</div>
+            <div class="f-chip">Available</div>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <select class="f-select"><option>Terrain: All</option><option>All-Mountain</option><option>Enduro</option><option>Cross-Country</option><option>Trail</option></select>
+              <select class="f-select"><option>Suspension: All</option><option>Full</option><option>Hardtail</option></select>
+              <select class="f-select"><option>Brand: All</option></select>
+            </div>
+          </div>
+          <div class="f-count">Showing 6 bikes &nbsp;·&nbsp; 2 available</div>
+          <div class="f-bike-grid">
+            <div class="f-bike-card rented">
+              <div class="f-bc-head"><div><div class="f-bc-name">TrailBlazer X9</div><div class="f-bc-brand">ApexRide</div></div><div class="f-badge f-badge-red">Rented</div></div>
+              <div class="f-bike-img"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 24l8-12 4 5 6-8 4 3" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-specs">
+                <div><div class="f-spec-k">Suspension</div><div class="f-spec-v">Full</div></div>
+                <div><div class="f-spec-k">Frame</div><div class="f-spec-v">Aluminum</div></div>
+                <div><div class="f-spec-k">Gears</div><div class="f-spec-v">21</div></div>
+                <div><div class="f-spec-k">Terrain</div><div class="f-spec-v">All-Mountain</div></div>
+              </div>
+              <div class="f-bc-foot"><div class="f-price">$24.99<span>/day</span></div><div class="f-btn f-btn-sm" style="color:#9E9A94;">Not available</div></div>
+            </div>
+            <div class="f-bike-card rented">
+              <div class="f-bc-head"><div><div class="f-bc-name">Summit Shredder</div><div class="f-bc-brand">PeakForce</div></div><div class="f-badge f-badge-red">Rented</div></div>
+              <div class="f-bike-img"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 24l8-12 4 5 6-8 4 3" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-specs">
+                <div><div class="f-spec-k">Suspension</div><div class="f-spec-v">Full</div></div>
+                <div><div class="f-spec-k">Frame</div><div class="f-spec-v">Carbon Fiber</div></div>
+                <div><div class="f-spec-k">Gears</div><div class="f-spec-v">27</div></div>
+                <div><div class="f-spec-k">Terrain</div><div class="f-spec-v">Enduro</div></div>
+              </div>
+              <div class="f-bc-foot"><div class="f-price">$34.99<span>/day</span></div><div class="f-btn f-btn-sm" style="color:#9E9A94;">Not available</div></div>
+            </div>
+            <div class="f-bike-card">
+              <div class="f-bc-head"><div><div class="f-bc-name">Ridge Runner</div><div class="f-bc-brand">ApexRide</div></div><div class="f-badge f-badge-green">Available</div></div>
+              <div class="f-bike-img"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 24l8-12 4 5 6-8 4 3" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-specs">
+                <div><div class="f-spec-k">Suspension</div><div class="f-spec-v">Hardtail</div></div>
+                <div><div class="f-spec-k">Frame</div><div class="f-spec-v">Steel</div></div>
+                <div><div class="f-spec-k">Gears</div><div class="f-spec-v">18</div></div>
+                <div><div class="f-spec-k">Terrain</div><div class="f-spec-v">Cross-Country</div></div>
+              </div>
+              <div class="f-bc-foot"><div class="f-price">$22.99<span>/day</span></div><div class="f-btn f-btn-primary f-btn-sm">Rent now</div></div>
+            </div>
+          </div>
+          <div style="height:8px;background:#F5F3EF;"></div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">vs Beach Cruisers</div>
+          <div class="anno-note">Mountain cards show 4 specs instead of 2. Brand name appears under model. Same BikeCard.vue component — prop <code style="font-size:10px;font-family:DM Mono,monospace;">type="mountain"</code> toggles extra spec slots.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Extra filters</div>
+          <div class="anno-row"><span class="anno-key">Terrain</span><span class="anno-val">dropdown</span></div>
+          <div class="anno-row"><span class="anno-key">Suspension</span><span class="anno-val">dropdown</span></div>
+          <div class="anno-row"><span class="anno-key">Brand</span><span class="anno-val">dropdown</span></div>
+          <div class="anno-row"><span class="anno-key">Available</span><span class="anno-val">chip toggle</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 4: RENT MODAL ─────────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title-outer">Rent Confirmation Modal</span>
+      <div class="section-line"></div>
+      <span class="section-tag">RentModal.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="340" data-h="320"></div>
+        <div class="frame-shell">
+          <div class="f-modal-overlay">
+            <div class="f-modal">
+              <div class="f-modal-head">
+                <div class="f-modal-title">Confirm rental</div>
+                <div class="f-modal-close">✕</div>
+              </div>
+              <div class="f-modal-info">
+                <h4>Ocean Breeze</h4>
+                <div class="sub">Beach Cruiser</div>
+                <div class="f-modal-specs">
+                  <div class="f-mspec">Color: <strong>Teal</strong></div>
+                  <div class="f-mspec">Frame: <strong>Large</strong></div>
+                  <div class="f-mspec">Rate: <strong>$16.99/day</strong></div>
+                  <div class="f-mspec">Status: <strong style="color:#1E6B3A;">Available</strong></div>
+                </div>
+              </div>
+              <div class="f-modal-note">By confirming, this bike will be marked as rented and removed from available inventory. This action is recorded in the audit log.</div>
+              <div class="f-modal-actions">
+                <div class="f-btn f-btn-sm">Cancel</div>
+                <div class="f-btn f-btn-primary f-btn-sm">Confirm rental</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Modal specs</div>
+          <div class="anno-row"><span class="anno-key">Width</span><span class="anno-val">340px</span></div>
+          <div class="anno-row"><span class="anno-key">Padding</span><span class="anno-val">24px</span></div>
+          <div class="anno-row"><span class="anno-key">Radius</span><span class="anno-val">16px</span></div>
+          <div class="anno-row"><span class="anno-key">Overlay</span><span class="anno-val">rgba(0,0,0,.55)</span></div>
+          <div class="anno-row"><span class="anno-key">Close</span><span class="anno-val">Esc or ✕</span></div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Flow</div>
+          <div class="anno-note">Replaces legacy <code style="font-size:10px;font-family:DM Mono,monospace;">window.confirm()</code>. On confirm → <code style="font-size:10px;font-family:DM Mono,monospace;">POST /api/bikes/{id}/rent</code>. Success: modal closes, card badge updates reactively via Pinia store. Error: toast fires, modal stays open.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Props</div>
+          <div class="anno-row"><span class="anno-key">bike</span><span class="anno-val">Object</span></div>
+          <div class="anno-row"><span class="anno-key">show</span><span class="anno-val">Boolean</span></div>
+          <div class="anno-row"><span class="anno-key">@confirm</span><span class="anno-val">emit</span></div>
+          <div class="anno-row"><span class="anno-key">@close</span><span class="anno-val">emit</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 5: ACCESSORIES ────────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title-outer">Accessories Shop</span>
+      <div class="section-line"></div>
+      <span class="section-tag">AccessoriesView.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="1280" data-h="auto"></div>
+        <div class="frame-shell">
+          <div class="f-nav">
+            <div class="f-logo"><div class="f-logo-mark"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+            <div class="f-nav-links"><div class="f-nav-link">Beach Cruisers</div><div class="f-nav-link">Mountain Bikes</div><div class="f-nav-link active">Accessories</div></div>
+            <div class="f-nav-right"><div class="f-btn f-btn-sm">Staff login</div></div>
+          </div>
+          <div class="f-filter" style="border-bottom:none;">
+            <span style="font-size:12px;color:#6B6760;font-weight:500;">Filter by bike type:</span>
+            <div class="f-chip active">All</div>
+            <div class="f-chip">Beach Cruisers</div>
+            <div class="f-chip">Mountain Bikes</div>
+            <div style="margin-left:auto;">
+              <select class="f-select"><option>Category: All</option><option>Hydration</option><option>Safety</option><option>Storage</option></select>
+            </div>
+          </div>
+          <div class="f-acc-layout">
+            <div class="f-acc-main">
+              <div style="font-size:11px;color:#9E9A94;margin-bottom:8px;">6 accessories available</div>
+              <div class="f-acc-grid">
+                <div class="f-acc-card">
+                  <div class="f-acc-head"><div class="f-acc-name">Water Bottle</div><div class="f-badge f-badge-gray" style="font-size:10px;">Hydration</div></div>
+                  <div class="f-acc-desc">Insulated 750ml, fits standard cages. Compatible with all bikes.</div>
+                  <div class="f-acc-foot"><div class="f-acc-price">$8.99</div><div class="f-qty"><div class="f-qty-btn">−</div><div class="f-qty-val">1</div><div class="f-qty-btn">+</div></div></div>
+                  <div class="f-acc-stock">12 in stock</div>
+                </div>
+                <div class="f-acc-card">
+                  <div class="f-acc-head"><div class="f-acc-name">Helmet</div><div class="f-badge f-badge-red" style="font-size:10px;">Safety</div></div>
+                  <div class="f-acc-desc">Adjustable vented design. Available M / L / XL.</div>
+                  <div class="f-acc-foot"><div class="f-acc-price">$12.99</div><div class="f-qty"><div class="f-qty-btn">−</div><div class="f-qty-val">0</div><div class="f-qty-btn">+</div></div></div>
+                  <div class="f-acc-stock">5 in stock</div>
+                </div>
+                <div class="f-acc-card">
+                  <div class="f-acc-head"><div class="f-acc-name">Bike Light</div><div class="f-badge f-badge-purple" style="font-size:10px;">Safety</div></div>
+                  <div class="f-acc-desc">Front LED + rear blinker, USB-C rechargeable. All bikes.</div>
+                  <div class="f-acc-foot"><div class="f-acc-price">$9.99</div><div class="f-qty"><div class="f-qty-btn">−</div><div class="f-qty-val">1</div><div class="f-qty-btn">+</div></div></div>
+                  <div class="f-acc-stock">8 in stock</div>
+                </div>
+                <div class="f-acc-card">
+                  <div class="f-acc-head"><div class="f-acc-name">Saddle Bag</div><div class="f-badge f-badge-gray" style="font-size:10px;">Storage</div></div>
+                  <div class="f-acc-desc">Under-seat zip bag with basic repair kit included.</div>
+                  <div class="f-acc-foot"><div class="f-acc-price">$14.99</div><div class="f-qty"><div class="f-qty-btn">−</div><div class="f-qty-val">0</div><div class="f-qty-btn">+</div></div></div>
+                  <div class="f-acc-stock">3 in stock</div>
+                </div>
+              </div>
+            </div>
+            <div class="f-acc-sidebar">
+              <div class="f-cart-title">Order summary</div>
+              <div class="f-bundle-badge">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#1E6B3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Bundle deal — 10% off
+              </div>
+              <div class="f-cart-item"><span>Water Bottle × 1</span><span class="f-cart-item-price">$8.99</span></div>
+              <div class="f-cart-item"><span>Bike Light × 1</span><span class="f-cart-item-price">$9.99</span></div>
+              <div class="f-summary">
+                <div class="f-summary-row"><span>Subtotal</span><span>$18.98</span></div>
+                <div class="f-summary-row discount"><span>Bundle discount (10%)</span><span>−$1.90</span></div>
+                <div class="f-summary-row total"><span>Total</span><span>$17.08</span></div>
+              </div>
+              <div class="f-btn f-btn-primary" style="width:100%;text-align:center;margin-top:16px;font-size:13px;padding:9px;">Confirm order</div>
+              <div style="font-size:11px;color:#9E9A94;text-align:center;margin-top:10px;line-height:1.5;">Add Water Bottle + Bike Light together to activate bundle deal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Bundle logic</div>
+          <div class="anno-note">Bundle triggers when cart contains both ID:1 (Water Bottle) and ID:3 (Bike Light). 10% applied to entire order total. Logic lives in <code style="font-size:10px;font-family:DM Mono,monospace;">useBundleDiscount.js</code> composable — rate configurable via <code style="font-size:10px;font-family:DM Mono,monospace;">config/pedalpal.php</code>.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">API calls</div>
+          <div class="anno-row"><span class="anno-key">Load</span><span class="anno-val purple">GET /api/accessories</span></div>
+          <div class="anno-row"><span class="anno-key">Submit</span><span class="anno-val purple">POST /api/accessories/order</span></div>
+          <div class="anno-row"><span class="anno-key">Filter</span><span class="anno-val">client-side</span></div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Cart store</div>
+          <div class="anno-note"><code style="font-size:10px;font-family:DM Mono,monospace;">useCartStore.js</code> — persists across page nav. Qty capped at stock_count. Out-of-stock: + button disabled, badge shown.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 6: ADMIN LOGIN ────────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title-outer">Staff Login</span>
+      <div class="section-line"></div>
+      <span class="section-tag">AdminLoginView.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="1280" data-h="360"></div>
+        <div class="frame-shell">
+          <div class="f-nav">
+            <div class="f-logo"><div class="f-logo-mark"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+          </div>
+          <div class="f-login-wrap">
+            <div class="f-login-card">
+              <div style="width:44px;height:44px;border-radius:12px;background:#6C63FF;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="10" width="14" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 10V7a4 4 0 018 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <h2>Staff login</h2>
+              <div class="sub">Manage inventory, returns, and rental activity</div>
+              <div class="f-field"><label>Email address</label><input type="email" placeholder="staff@pedalpal.com" /></div>
+              <div class="f-field"><label>Password</label><input type="password" placeholder="••••••••" /></div>
+              <div class="f-btn f-btn-primary" style="width:100%;text-align:center;padding:9px;font-size:13px;margin-top:4px;">Sign in</div>
+              <div style="font-size:11px;color:#9E9A94;text-align:center;margin-top:16px;">Customer? No login needed — <a href="#" style="color:#6C63FF;text-decoration:none;">browse bikes →</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Auth flow</div>
+          <div class="anno-note">Replaces unauthenticated Easter-egg reset. <code style="font-size:10px;font-family:DM Mono,monospace;">POST /api/auth/login</code> → Laravel Sanctum returns session cookie. <code style="font-size:10px;font-family:DM Mono,monospace;">useAuthStore.js</code> stores auth state. Vue Router guard on <code style="font-size:10px;font-family:DM Mono,monospace;">/admin/*</code> redirects unauthenticated to this page.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Validation</div>
+          <div class="anno-row"><span class="anno-key">Email</span><span class="anno-val">required · email</span></div>
+          <div class="anno-row"><span class="anno-key">Password</span><span class="anno-val">required · min:8</span></div>
+          <div class="anno-row"><span class="anno-key">Error</span><span class="anno-val red">inline + toast</span></div>
+          <div class="anno-row"><span class="anno-key">Rate limit</span><span class="anno-val">5 attempts</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 7: ADMIN DASHBOARD ────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title-outer">Admin Dashboard</span>
+      <div class="section-line"></div>
+      <span class="section-tag">AdminView.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="1280" data-h="auto"></div>
+        <div class="frame-shell">
+          <div class="f-nav">
+            <div class="f-logo"><div class="f-logo-mark"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.3"/><path d="M6 11l2-6 2 2.5 2-3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal — Admin</div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+              <div style="font-size:12px;color:#6B6760;">Signed in as <strong style="color:#1A1A1A;">staff@pedalpal.com</strong></div>
+              <div class="f-btn f-btn-sm">Sign out</div>
+            </div>
+          </div>
+          <div class="f-admin-layout">
+            <div class="f-admin-sidebar">
+              <div style="padding:12px 20px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#9E9A94;font-weight:500;">Admin panel</div>
+              <div class="f-admin-nav-item active"><svg viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="8" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="8" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>Overview</div>
+              <div class="f-admin-nav-item"><svg viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M7.5 4.5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Rental log</div>
+              <div class="f-admin-nav-item"><svg viewBox="0 0 15 15" fill="none"><path d="M2 4.5h11M2 7.5h8M2 10.5h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Inventory</div>
+              <div class="f-admin-nav-item"><svg viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 13c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Staff accounts</div>
+              <div class="f-admin-sep"></div>
+              <div class="f-admin-nav-item" style="color:#9E9A94;"><svg viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M7.5 5v2.5l1.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Settings</div>
+            </div>
+            <div class="f-admin-main">
+              <div class="f-admin-page-title">Overview</div>
+              <div class="f-stat-grid">
+                <div class="f-stat-card"><div class="f-stat-label">Total bikes</div><div class="f-stat-val">12</div></div>
+                <div class="f-stat-card"><div class="f-stat-label">Currently rented</div><div class="f-stat-val purple">7</div></div>
+                <div class="f-stat-card"><div class="f-stat-label">Available now</div><div class="f-stat-val green">5</div></div>
+              </div>
+              <div class="f-section-label">Recent rental activity</div>
+              <table class="f-table">
+                <thead><tr><th>Bike</th><th>Type</th><th>Action</th><th>When</th><th style="text-align:right;">Actions</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>TrailBlazer X9</strong></td><td><span class="f-badge f-badge-purple" style="font-size:10px;">Mountain</span></td><td><span class="f-badge f-badge-red" style="font-size:10px;">Rented</span></td><td style="color:#9E9A94;">2 min ago</td><td><div class="f-btn f-btn-sm">Mark returned</div></td></tr>
+                  <tr><td><strong>Ocean Breeze</strong></td><td><span class="f-badge f-badge-green" style="font-size:10px;">Beach</span></td><td><span class="f-badge f-badge-red" style="font-size:10px;">Rented</span></td><td style="color:#9E9A94;">18 min ago</td><td><div class="f-btn f-btn-sm">Mark returned</div></td></tr>
+                  <tr><td><strong>Ridge Runner</strong></td><td><span class="f-badge f-badge-purple" style="font-size:10px;">Mountain</span></td><td><span class="f-badge f-badge-green" style="font-size:10px;">Returned</span></td><td style="color:#9E9A94;">1 hr ago</td><td></td></tr>
+                </tbody>
+              </table>
+              <div class="f-section-label" style="margin-top:24px;">Danger zone</div>
+              <div class="f-danger-zone">
+                <div><strong>Reset all inventory</strong><p>Marks every bike as available and restores all accessory stock to factory defaults. This is logged.</p></div>
+                <div class="f-btn f-btn-danger f-btn-sm">Reset all data</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Stat cards</div>
+          <div class="anno-note">Numbers derived from <code style="font-size:10px;font-family:DM Mono,monospace;">GET /api/bikes</code> — computed in Pinia. Refreshes every 30s automatically via <code style="font-size:10px;font-family:DM Mono,monospace;">setInterval</code> while admin tab is active.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Reset flow</div>
+          <div class="anno-note">Button triggers confirmation modal (AppModal.vue). On confirm → <code style="font-size:10px;font-family:DM Mono,monospace;">POST /api/admin/reset</code> with Sanctum auth header. Replaces legacy unauthenticated Easter egg reset. Action is written to <code style="font-size:10px;font-family:DM Mono,monospace;">rental_logs</code>.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Mark returned</div>
+          <div class="anno-row"><span class="anno-key">Endpoint</span><span class="anno-val purple">PATCH /admin/bikes/{id}/return</span></div>
+          <div class="anno-row"><span class="anno-key">Auth</span><span class="anno-val green">Required</span></div>
+          <div class="anno-row"><span class="anno-key">Effect</span><span class="anno-val">is_available → true</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SCREEN 8: TOASTS ─────────────────────── -->
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title-outer">Toast Notification States</span>
+      <div class="section-line"></div>
+      <span class="section-tag">AppToast.vue</span>
+    </div>
+    <div class="frame-wrap">
+      <div style="flex:1;">
+        <div class="frame-label" data-w="auto" data-h="auto"></div>
+        <div class="frame-shell">
+          <div class="f-toast-area">
+            <div class="f-toast f-toast-success">
+              <div class="f-toast-icon" style="background:#D4F0E0;"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#1E6B3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-toast-body"><strong>Bike rented!</strong><span>Ocean Breeze is now reserved for the day.</span></div>
+            </div>
+            <div class="f-toast f-toast-error">
+              <div class="f-toast-icon" style="background:#FDEAEA;"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 3l4 4M7 3l-4 4" stroke="#8B2020" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <div class="f-toast-body"><strong>Already rented.</strong><span>This bike was just taken — try another.</span></div>
+            </div>
+            <div class="f-toast f-toast-success">
+              <div class="f-toast-icon" style="background:#D4F0E0;"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#1E6B3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="f-toast-body"><strong>Order confirmed!</strong><span>Bundle discount of 10% applied.</span></div>
+            </div>
+            <div class="f-toast f-toast-info">
+              <div class="f-toast-icon" style="background:#EEEDFE;"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="#3C34A0" stroke-width="1.2"/><path d="M5 4.5V7" stroke="#3C34A0" stroke-width="1.2" stroke-linecap="round"/><circle cx="5" cy="3.2" r="0.5" fill="#3C34A0"/></svg></div>
+              <div class="f-toast-body"><strong>Inventory reset.</strong><span>All bikes and stock restored to defaults.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno-panel">
+        <div class="anno-card">
+          <div class="anno-card-title">Specs</div>
+          <div class="anno-row"><span class="anno-key">Position</span><span class="anno-val">bottom-right</span></div>
+          <div class="anno-row"><span class="anno-key">Duration</span><span class="anno-val">4 000ms</span></div>
+          <div class="anno-row"><span class="anno-key">Transition</span><span class="anno-val">slide-up + fade</span></div>
+          <div class="anno-row"><span class="anno-key">Max stack</span><span class="anno-val">3 toasts</span></div>
+          <div class="anno-row"><span class="anno-key">Dismiss</span><span class="anno-val">click or auto</span></div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-title">Variants</div>
+          <div class="anno-row"><span class="anno-key">success</span><span class="anno-val green">green border</span></div>
+          <div class="anno-row"><span class="anno-key">error</span><span class="anno-val red">red border</span></div>
+          <div class="anno-row"><span class="anno-key">info</span><span class="anno-val purple">purple border</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DESIGN SYSTEM ════════════════════════════ -->
+  <div id="design-system" style="padding-top:20px;">
+    <div class="page-section-title">Design System</div>
+    <div class="page-section-sub">Tokens, typography, and spacing used across all screens</div>
+  </div>
+
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">DS</span>
+      <span class="section-title-outer">Color Palette</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="spec-docs-grid">
+      <div class="spec-doc-card">
+        <div class="spec-doc-title">Brand / Primary</div>
+        <div class="colors-grid" style="margin-bottom:0;">
+          <div class="color-swatch"><div class="swatch-block" style="background:#6C63FF;"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-hex">#6C63FF</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#EEEDFE;border:1px solid #D4D0F8;"></div><div class="swatch-info"><div class="swatch-name">Primary light</div><div class="swatch-hex">#EEEDFE</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#3C34A0;"></div><div class="swatch-info"><div class="swatch-name">Primary dark</div><div class="swatch-hex">#3C34A0</div></div></div>
+        </div>
+      </div>
+      <div class="spec-doc-card">
+        <div class="spec-doc-title">Semantic</div>
+        <div class="colors-grid" style="margin-bottom:0;">
+          <div class="color-swatch"><div class="swatch-block" style="background:#3B9B5E;"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#3B9B5E</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#D94F4F;"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-hex">#D94F4F</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#D97706;"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-hex">#D97706</div></div></div>
+        </div>
+      </div>
+      <div class="spec-doc-card">
+        <div class="spec-doc-title">Neutrals</div>
+        <div class="colors-grid" style="margin-bottom:0;">
+          <div class="color-swatch"><div class="swatch-block" style="background:#1A1A1A;"></div><div class="swatch-info"><div class="swatch-name">Text primary</div><div class="swatch-hex">#1A1A1A</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#6B6760;"></div><div class="swatch-info"><div class="swatch-name">Text secondary</div><div class="swatch-hex">#6B6760</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#F5F3EF;border:1px solid #E8E4DC;"></div><div class="swatch-info"><div class="swatch-name">Page bg</div><div class="swatch-hex">#F5F3EF</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#fff;border:1px solid #E8E4DC;"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#FFFFFF</div></div></div>
+          <div class="color-swatch"><div class="swatch-block" style="background:#E8E4DC;"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#E8E4DC</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">DS</span>
+      <span class="section-title-outer">Typography</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="spec-doc-card" style="background:var(--surf2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--txt3);font-family:'DM Mono',monospace;margin-bottom:16px;">Font: DM Sans · Mono: DM Mono</div>
+      <div class="type-row">
+        <div class="type-meta"><div class="type-meta-tag">H1</div><div class="type-meta-spec">32px / 600 / −0.5px</div></div>
+        <div class="type-preview" style="font-size:32px;font-weight:600;color:var(--txt);letter-spacing:-0.5px;">Choose your adventure</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="type-meta-tag">H2</div><div class="type-meta-spec">22px / 600 / −0.3px</div></div>
+        <div class="type-preview" style="font-size:22px;font-weight:600;color:var(--txt);letter-spacing:-0.3px;">Staff login</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="type-meta-tag">H3 / Card title</div><div class="type-meta-spec">15px / 600 / 0</div></div>
+        <div class="type-preview" style="font-size:15px;font-weight:600;color:var(--txt);">TrailBlazer X9</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="type-meta-tag">Body</div><div class="type-meta-spec">13px / 400 / 1.6 lh</div></div>
+        <div class="type-preview" style="font-size:13px;color:var(--txt2);line-height:1.6;">Wide tires, laid-back frames, perfect for the boardwalk and gentle existential crises.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="type-meta-tag">Label / Spec key</div><div class="type-meta-spec">10px / 500 / uppercase</div></div>
+        <div class="type-preview" style="font-size:10px;font-weight:500;color:var(--txt3);text-transform:uppercase;letter-spacing:0.06em;">Frame size</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="type-meta-tag">Mono / Code</div><div class="type-meta-spec">DM Mono 11px / 400</div></div>
+        <div class="type-preview" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--txt2);">GET /api/bikes?type=beach</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">DS</span>
+      <span class="section-title-outer">Spacing &amp; Radius</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="spec-docs-grid">
+      <div class="spec-doc-card">
+        <div class="spec-doc-title">Spacing scale</div>
+        <div class="spacing-row"><div class="spacing-label">4px</div><div class="spacing-bar" style="width:4px;"></div><div class="spacing-val">xs — icon gap</div></div>
+        <div class="spacing-row"><div class="spacing-label">8px</div><div class="spacing-bar" style="width:8px;"></div><div class="spacing-val">sm — inline elements</div></div>
+        <div class="spacing-row"><div class="spacing-label">12px</div><div class="spacing-bar" style="width:12px;"></div><div class="spacing-val">md — card internal</div></div>
+        <div class="spacing-row"><div class="spacing-label">16px</div><div class="spacing-bar" style="width:16px;"></div><div class="spacing-val">lg — section padding</div></div>
+        <div class="spacing-row"><div class="spacing-label">24px</div><div class="spacing-bar" style="width:24px;"></div><div class="spacing-val">xl — page horizontal</div></div>
+        <div class="spacing-row"><div class="spacing-label">40px</div><div class="spacing-bar" style="width:40px;"></div><div class="spacing-val">2xl — hero padding</div></div>
+      </div>
+      <div class="spec-doc-card">
+        <div class="spec-doc-title">Border radius</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:32px;height:32px;background:var(--surf3);border-radius:6px;border:1px solid var(--border2);flex-shrink:0;"></div>
+            <div><div style="font-size:12px;color:var(--txt);">sm — 6px</div><div style="font-size:11px;color:var(--txt3);">badges, chips, inputs</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:40px;height:40px;background:var(--surf3);border-radius:10px;border:1px solid var(--border2);flex-shrink:0;"></div>
+            <div><div style="font-size:12px;color:var(--txt);">md — 10px</div><div style="font-size:11px;color:var(--txt3);">tables, stat cards</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:52px;height:52px;background:var(--surf3);border-radius:14px;border:1px solid var(--border2);flex-shrink:0;"></div>
+            <div><div style="font-size:12px;color:var(--txt);">lg — 14px</div><div style="font-size:11px;color:var(--txt3);">bike cards, acc cards</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:60px;height:60px;background:var(--surf3);border-radius:20px;border:1px solid var(--border2);flex-shrink:0;"></div>
+            <div><div style="font-size:12px;color:var(--txt);">xl — 20px</div><div style="font-size:11px;color:var(--txt3);">frame shell, modal</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-doc-card">
+        <div class="spec-doc-title">Shadows</div>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+          <div><div style="width:100%;height:40px;background:#fff;border-radius:8px;border:1px solid #E8E4DC;"></div><div style="font-size:11px;color:var(--txt3);margin-top:6px;">Default — border only</div></div>
+          <div><div style="width:100%;height:40px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.06);"></div><div style="font-size:11px;color:var(--txt3);margin-top:6px;">Elevated — modals, toasts</div></div>
+          <div><div style="width:100%;height:40px;background:#fff;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.18);"></div><div style="font-size:11px;color:var(--txt3);margin-top:6px;">Deep — confirm modals</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ COMPONENTS ═══════════════════════════════ -->
+  <div id="components" style="padding-top:20px;">
+    <div class="page-section-title">Component Inventory</div>
+    <div class="page-section-sub">All Vue 3 components with props, slots, and usage notes</div>
+  </div>
+
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">C</span>
+      <span class="section-title-outer">Vue 3 Components</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="comp-grid">
+      <div class="comp-item"><div class="comp-item-tag">views/</div><div class="comp-item-name">HomeView.vue</div><div class="comp-item-desc">Landing page with category hero cards</div><div class="comp-item-props"><span class="comp-prop">no props</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">views/</div><div class="comp-item-name">BeachCruisersView</div><div class="comp-item-desc">Beach bike grid with filter bar</div><div class="comp-item-props"><span class="comp-prop">no props</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">views/</div><div class="comp-item-name">MountainBikesView</div><div class="comp-item-desc">Mountain bike grid, extra spec rows</div><div class="comp-item-props"><span class="comp-prop">no props</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">views/</div><div class="comp-item-name">AccessoriesView</div><div class="comp-item-desc">Accessories grid + cart sidebar</div><div class="comp-item-props"><span class="comp-prop">no props</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">views/</div><div class="comp-item-name">AdminLoginView</div><div class="comp-item-desc">Sanctum session login form</div><div class="comp-item-props"><span class="comp-prop">no props</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">views/</div><div class="comp-item-name">AdminView</div><div class="comp-item-desc">Dashboard, stats, log, reset</div><div class="comp-item-props"><span class="comp-prop">auth guard</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">bikes/</div><div class="comp-item-name">BikeCard.vue</div><div class="comp-item-desc">Single bike card, handles both types</div><div class="comp-item-props"><span class="comp-prop">bike: Object</span><span class="comp-prop">type: String</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">bikes/</div><div class="comp-item-name">BikeGrid.vue</div><div class="comp-item-desc">Responsive 3-col grid wrapper</div><div class="comp-item-props"><span class="comp-prop">bikes: Array</span><span class="comp-prop">type: String</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">bikes/</div><div class="comp-item-name">BikeFilterBar.vue</div><div class="comp-item-desc">Search + chips + dropdowns</div><div class="comp-item-props"><span class="comp-prop">type: String</span><span class="comp-prop">@filter emit</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">bikes/</div><div class="comp-item-name">RentModal.vue</div><div class="comp-item-desc">Confirm rental dialog</div><div class="comp-item-props"><span class="comp-prop">bike: Object</span><span class="comp-prop">show: Boolean</span><span class="comp-prop">@confirm</span><span class="comp-prop">@close</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">accessories/</div><div class="comp-item-name">AccessoryCard.vue</div><div class="comp-item-desc">Accessory card with qty controls</div><div class="comp-item-props"><span class="comp-prop">accessory: Object</span><span class="comp-prop">@add emit</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">accessories/</div><div class="comp-item-name">CartSidebar.vue</div><div class="comp-item-desc">Order summary + bundle badge</div><div class="comp-item-props"><span class="comp-prop">cart: Array</span><span class="comp-prop">@order emit</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">ui/</div><div class="comp-item-name">AppNav.vue</div><div class="comp-item-desc">Top navigation bar, all pages</div><div class="comp-item-props"><span class="comp-prop">slot: right</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">ui/</div><div class="comp-item-name">AppToast.vue</div><div class="comp-item-desc">Notification toasts (3 variants)</div><div class="comp-item-props"><span class="comp-prop">type: String</span><span class="comp-prop">message: String</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">ui/</div><div class="comp-item-name">AppModal.vue</div><div class="comp-item-desc">Generic modal wrapper</div><div class="comp-item-props"><span class="comp-prop">show: Boolean</span><span class="comp-prop">slot: default</span></div></div>
+      <div class="comp-item"><div class="comp-item-tag">ui/</div><div class="comp-item-name">AppBadge.vue</div><div class="comp-item-desc">Status/category badges</div><div class="comp-item-props"><span class="comp-prop">variant: String</span></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ API REFERENCE ════════════════════════════ -->
+  <div id="api" style="padding-top:20px;">
+    <div class="page-section-title">API Reference</div>
+    <div class="page-section-sub">REST endpoints — Laravel 11 · <code style="font-family:DM Mono,monospace;font-size:13px;color:var(--txt2);">routes/api.php</code></div>
+  </div>
+
+  <div class="wf-section">
+    <div class="section-header">
+      <span class="section-num">API</span>
+      <span class="section-title-outer">Endpoints</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="spec-doc-card" style="background:var(--surf2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+      <table class="api-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-get">GET</span></td><td><span class="endpoint-path">/api/bikes</span></td><td class="auth-lock">—</td><td>List all bikes. Optional <code style="font-size:11px;font-family:'DM Mono',monospace;">?type=beach|mountain</code></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td><span class="endpoint-path">/api/bikes/{id}</span></td><td class="auth-lock">—</td><td>Single bike detail</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td><span class="endpoint-path">/api/bikes/{id}/rent</span></td><td class="auth-lock">—</td><td>Rent a bike — sets <code style="font-size:11px;font-family:'DM Mono',monospace;">is_available = false</code></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td><span class="endpoint-path">/api/accessories</span></td><td class="auth-lock">—</td><td>List accessories. Optional <code style="font-size:11px;font-family:'DM Mono',monospace;">?bikeType=</code></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td><span class="endpoint-path">/api/accessories/order</span></td><td class="auth-lock">—</td><td>Place order. Bundle discount auto-applied.</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td><span class="endpoint-path">/api/auth/login</span></td><td class="auth-lock">—</td><td>Admin login → session cookie (Sanctum)</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td><span class="endpoint-path">/api/auth/logout</span></td><td class="auth-lock">🔒</td><td>End admin session</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td><span class="endpoint-path">/api/admin/reset</span></td><td class="auth-lock">🔒</td><td>Reset all inventory to defaults</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td><span class="endpoint-path">/api/admin/logs</span></td><td class="auth-lock">🔒</td><td>Recent rental activity log</td></tr>
+          <tr><td><span class="method method-patch">PATCH</span></td><td><span class="endpoint-path">/api/admin/bikes/{id}/return</span></td><td class="auth-lock">🔒</td><td>Mark bike as returned</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--txt3);font-family:'DM Mono',monospace;margin-bottom:10px;">Standard response envelope</div>
+        <pre style="font-family:'DM Mono',monospace;font-size:12px;color:var(--txt2);line-height:1.7;white-space:pre-wrap;">// Success
+{ "success": true,  "data": { ... },   "message": "Bike rented successfully." }
+
+// Error
+{ "success": false, "data": null,      "message": "Bike is not available."    }</pre>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:40px 0 20px;font-size:11px;color:var(--txt3);font-family:'DM Mono',monospace;">
+    PedalPal Wireframe Spec · v1.0 · April 2026 · Laravel 11 + Vue 3 + Pinia + Tailwind CSS
+  </div>
+
+</div><!-- /canvas -->
+</body>
+</html>

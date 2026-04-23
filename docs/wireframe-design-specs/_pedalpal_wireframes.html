@@ -1,0 +1,512 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .wf-root { padding: 1.5rem 0; display: flex; flex-direction: column; gap: 3rem; }
+  .wf-section { display: flex; flex-direction: column; gap: 0.5rem; }
+  .wf-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; padding: 0 2px; }
+  .wf-screen { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); overflow: hidden; }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 15px; color: var(--color-text-primary); }
+  .logo-icon { width: 28px; height: 28px; border-radius: 6px; background: #534AB7; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 16px; height: 16px; }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-link { font-size: 13px; color: var(--color-text-secondary); cursor: pointer; }
+  .nav-link.active { color: #534AB7; font-weight: 500; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .btn { font-size: 12px; padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); cursor: pointer; font-family: var(--font-sans); color: var(--color-text-primary); background: var(--color-background-primary); }
+  .btn-primary { background: #534AB7; color: #fff; border-color: #534AB7; }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+  .badge-green { background: #EAF3DE; color: #3B6D11; }
+  .badge-red { background: #FCEBEB; color: #A32D2D; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-gray { background: #F1EFE8; color: #5F5E5A; }
+  .chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); cursor: pointer; color: var(--color-text-secondary); background: var(--color-background-primary); }
+  .chip.active { background: #EEEDFE; border-color: #AFA9EC; color: #3C3489; }
+
+  /* HERO */
+  .hero { padding: 40px 20px; text-align: center; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .hero h1 { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+  .hero p { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 20px; }
+  .hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 480px; margin: 0 auto; }
+  .hero-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 20px 16px; text-align: center; cursor: pointer; }
+  .hero-card:hover { border-color: var(--color-border-secondary); }
+  .hero-card-icon { width: 40px; height: 40px; border-radius: 10px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; }
+  .hero-card h3 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .hero-card p { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 12px; }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); flex-wrap: wrap; }
+  .filter-bar span { font-size: 12px; color: var(--color-text-secondary); margin-right: 4px; }
+  .search-box { flex: 1; min-width: 140px; }
+  .search-box input { width: 100%; font-size: 12px; padding: 5px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-family: var(--font-sans); background: var(--color-background-secondary); color: var(--color-text-primary); }
+
+  /* BIKE GRID */
+  .bike-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 20px; }
+  .bike-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+  .bike-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .bike-card h3 { font-size: 13px; font-weight: 500; }
+  .bike-card .brand { font-size: 11px; color: var(--color-text-secondary); margin-top: 1px; }
+  .bike-img-placeholder { height: 60px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+  .bike-img-placeholder svg { width: 28px; height: 28px; opacity: 0.3; }
+  .bike-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 10px; }
+  .spec-row { display: flex; flex-direction: column; }
+  .spec-key { font-size: 9px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+  .spec-val { font-size: 11px; color: var(--color-text-primary); font-weight: 500; }
+  .bike-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 0.5px solid var(--color-border-tertiary); }
+  .price { font-size: 14px; font-weight: 500; color: #534AB7; }
+  .price span { font-size: 10px; color: var(--color-text-secondary); font-weight: 400; }
+
+  /* ACCESSORIES */
+  .acc-layout { display: grid; grid-template-columns: 1fr 280px; gap: 0; }
+  .acc-main { padding: 16px 20px; border-right: 0.5px solid var(--color-border-tertiary); }
+  .acc-sidebar { padding: 16px; }
+  .acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .acc-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px; }
+  .acc-card h4 { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+  .acc-card p { font-size: 10px; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.4; }
+  .acc-card-footer { display: flex; justify-content: space-between; align-items: center; }
+  .qty-ctrl { display: flex; align-items: center; gap: 6px; }
+  .qty-btn { width: 20px; height: 20px; border: 0.5px solid var(--color-border-secondary); border-radius: 4px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary); background: var(--color-background-primary); }
+  .qty-val { font-size: 12px; font-weight: 500; min-width: 14px; text-align: center; }
+  .cart-title { font-size: 13px; font-weight: 500; margin-bottom: 12px; color: var(--color-text-primary); }
+  .cart-empty { font-size: 11px; color: var(--color-text-tertiary); text-align: center; padding: 20px 0; }
+  .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .cart-item-name { font-size: 11px; }
+  .cart-item-price { font-size: 11px; font-weight: 500; }
+  .cart-summary { margin-top: 12px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; color: var(--color-text-secondary); }
+  .summary-row.total { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-top: 0.5px solid var(--color-border-tertiary); margin-top: 6px; padding-top: 8px; }
+  .bundle-badge { background: #EAF3DE; color: #3B6D11; font-size: 10px; padding: 3px 8px; border-radius: 20px; margin-bottom: 8px; display: inline-block; }
+
+  /* RENT MODAL */
+  .modal-overlay { background: rgba(0,0,0,0.35); min-height: 300px; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-box { background: var(--color-background-primary); border-radius: var(--border-radius-lg); padding: 20px; width: 320px; border: 0.5px solid var(--color-border-secondary); }
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .modal-title { font-size: 15px; font-weight: 500; }
+  .modal-close { width: 22px; height: 22px; border-radius: 50%; border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; color: var(--color-text-secondary); }
+  .modal-bike-info { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; margin-bottom: 14px; }
+  .modal-bike-info h4 { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .modal-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .modal-spec { font-size: 11px; color: var(--color-text-secondary); }
+  .modal-spec strong { color: var(--color-text-primary); font-weight: 500; }
+  .modal-actions { display: flex; gap: 8px; }
+  .modal-actions .btn { flex: 1; text-align: center; font-size: 12px; }
+
+  /* ADMIN */
+  .admin-layout { display: grid; grid-template-columns: 180px 1fr; min-height: 380px; }
+  .admin-sidebar { border-right: 0.5px solid var(--color-border-tertiary); padding: 16px 0; }
+  .admin-nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 12px; cursor: pointer; color: var(--color-text-secondary); }
+  .admin-nav-item.active { color: #534AB7; background: #EEEDFE; font-weight: 500; }
+  .admin-nav-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .admin-main { padding: 16px 20px; }
+  .admin-page-title { font-size: 15px; font-weight: 500; margin-bottom: 16px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+  .stat-card label { font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
+  .stat-card .stat-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .admin-table th { text-align: left; font-weight: 500; font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .admin-table td { padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  .admin-table td:last-child { text-align: right; }
+  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 16px 0; }
+  .section-title { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 10px; }
+  .danger-zone { border: 0.5px solid #F0997B; border-radius: var(--border-radius-md); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .danger-zone p { font-size: 12px; color: var(--color-text-secondary); }
+  .danger-zone strong { display: block; font-size: 13px; color: var(--color-text-primary); margin-bottom: 2px; }
+  .btn-danger { background: #D85A30; color: #fff; border-color: #D85A30; }
+
+  /* LOGIN */
+  .login-wrap { display: flex; align-items: center; justify-content: center; padding: 40px 20px; min-height: 340px; }
+  .login-card { width: 280px; }
+  .login-card h2 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .login-card .sub { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px; }
+  .form-field { margin-bottom: 12px; }
+  .form-field label { display: block; font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .form-field input { width: 100%; font-size: 12px; padding: 7px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-family: var(--font-sans); background: var(--color-background-secondary); color: var(--color-text-primary); }
+
+  /* TOAST */
+  .toast { display: flex; align-items: center; gap: 8px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; box-shadow: none; font-size: 12px; max-width: 260px; }
+  .toast-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .toast-success { border-left: 3px solid #639922; }
+  .toast-error { border-left: 3px solid #E24B4A; }
+  .toast-wrapper { padding: 12px 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+</style>
+
+<div class="wf-root">
+
+  <!-- 1. HOMEPAGE -->
+  <div class="wf-section">
+    <div class="wf-label">1 — Homepage</div>
+    <div class="wf-screen">
+      <div class="nav">
+        <div class="nav-logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M6 11l2-6 2 2 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          PedalPal
+        </div>
+        <div class="nav-links">
+          <div class="nav-link active">Beach Cruisers</div>
+          <div class="nav-link">Mountain Bikes</div>
+          <div class="nav-link">Accessories</div>
+        </div>
+        <div class="nav-actions">
+          <div class="btn btn-sm">Staff login</div>
+        </div>
+      </div>
+      <div class="hero">
+        <div style="font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 8px; letter-spacing: 0.05em; text-transform: uppercase;">Bike Rentals</div>
+        <h1>Choose your adventure</h1>
+        <p>Pedals provided. Excuses are extra.</p>
+        <div class="hero-cards">
+          <div class="hero-card">
+            <div class="hero-card-icon" style="background:#FBEAF0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="17" r="3" stroke="#D4537E" stroke-width="1.5"/><circle cx="19" cy="17" r="3" stroke="#D4537E" stroke-width="1.5"/><path d="M5 17l5-7 4 4 3-4" stroke="#D4537E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Beach Cruisers</h3>
+            <p>Wide tires, laid-back frames, perfect for the boardwalk</p>
+            <div class="btn btn-primary btn-sm" style="width:100%;text-align:center;">Browse →</div>
+          </div>
+          <div class="hero-card">
+            <div class="hero-card-icon" style="background:#EEEDFE;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="17" r="3" stroke="#534AB7" stroke-width="1.5"/><circle cx="19" cy="17" r="3" stroke="#534AB7" stroke-width="1.5"/><path d="M5 17l5-7 4 4 3-4" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Mountain Bikes</h3>
+            <p>Suspension forks, aggressive geometry, lots of gears</p>
+            <div class="btn btn-sm" style="width:100%;text-align:center;background:#534AB7;color:#fff;border-color:#534AB7;">Browse →</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;font-size:11px;color:var(--color-text-tertiary);">Also available: <a style="color:#534AB7;text-decoration:none;">Accessories shop →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. BIKE CATALOG (Beach Cruisers) -->
+  <div class="wf-section">
+    <div class="wf-label">2 — Beach Cruiser catalog</div>
+    <div class="wf-screen">
+      <div class="nav">
+        <div class="nav-logo"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M6 11l2-6 2 2 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+        <div class="nav-links"><div class="nav-link active">Beach Cruisers</div><div class="nav-link">Mountain Bikes</div><div class="nav-link">Accessories</div></div>
+        <div class="nav-actions"><div class="btn btn-sm">Staff login</div></div>
+      </div>
+      <div class="filter-bar">
+        <div class="search-box"><input type="text" placeholder="Search bikes..." /></div>
+        <div class="chip active">All</div>
+        <div class="chip">Available</div>
+        <div style="margin-left:auto;display:flex;gap:6px;">
+          <select style="font-size:11px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);"><option>Frame size: All</option></select>
+          <select style="font-size:11px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);"><option>Color: All</option></select>
+        </div>
+      </div>
+      <div style="padding:8px 20px 0;font-size:11px;color:var(--color-text-tertiary);">Showing 6 bikes · 4 available</div>
+      <div class="bike-grid">
+        <!-- Card 1 available -->
+        <div class="bike-card">
+          <div class="bike-card-header"><div><div class="bike-card h3" style="font-size:13px;font-weight:500;">Sunset Drifter</div></div><div class="badge badge-green">Available</div></div>
+          <div class="bike-img-placeholder"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 24l8-14 8 8 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="bike-specs">
+            <div class="spec-row"><span class="spec-key">Color</span><span class="spec-val">Coral</span></div>
+            <div class="spec-row"><span class="spec-key">Frame</span><span class="spec-val">Medium</span></div>
+          </div>
+          <div class="bike-footer"><div class="price">$14.99<span>/day</span></div><div class="btn btn-primary btn-sm">Rent now</div></div>
+        </div>
+        <!-- Card 2 available -->
+        <div class="bike-card">
+          <div class="bike-card-header"><div><div style="font-size:13px;font-weight:500;">Ocean Breeze</div></div><div class="badge badge-green">Available</div></div>
+          <div class="bike-img-placeholder"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 24l8-14 8 8 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="bike-specs">
+            <div class="spec-row"><span class="spec-key">Color</span><span class="spec-val">Teal</span></div>
+            <div class="spec-row"><span class="spec-key">Frame</span><span class="spec-val">Large</span></div>
+          </div>
+          <div class="bike-footer"><div class="price">$16.99<span>/day</span></div><div class="btn btn-primary btn-sm">Rent now</div></div>
+        </div>
+        <!-- Card 3 rented -->
+        <div class="bike-card" style="opacity:0.7;">
+          <div class="bike-card-header"><div><div style="font-size:13px;font-weight:500;">Sandy Shores</div></div><div class="badge badge-red">Rented</div></div>
+          <div class="bike-img-placeholder"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 24l8-14 8 8 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="bike-specs">
+            <div class="spec-row"><span class="spec-key">Color</span><span class="spec-val">Cream</span></div>
+            <div class="spec-row"><span class="spec-key">Frame</span><span class="spec-val">Small</span></div>
+          </div>
+          <div class="bike-footer"><div class="price">$12.99<span>/day</span></div><div class="btn btn-sm" style="color:var(--color-text-tertiary);cursor:default;">Not available</div></div>
+        </div>
+      </div>
+      <div style="height:8px;"></div>
+    </div>
+  </div>
+
+  <!-- 3. MOUNTAIN BIKE CATALOG -->
+  <div class="wf-section">
+    <div class="wf-label">3 — Mountain Bike catalog</div>
+    <div class="wf-screen">
+      <div class="nav">
+        <div class="nav-logo"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M6 11l2-6 2 2 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+        <div class="nav-links"><div class="nav-link">Beach Cruisers</div><div class="nav-link active">Mountain Bikes</div><div class="nav-link">Accessories</div></div>
+        <div class="nav-actions"><div class="btn btn-sm">Staff login</div></div>
+      </div>
+      <div class="filter-bar">
+        <div class="search-box"><input type="text" placeholder="Search mountain bikes..." /></div>
+        <div style="margin-left:auto;display:flex;gap:6px;">
+          <select style="font-size:11px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);"><option>Terrain: All</option></select>
+          <select style="font-size:11px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);"><option>Suspension: All</option></select>
+          <div class="chip active">All</div><div class="chip">Available</div>
+        </div>
+      </div>
+      <div class="bike-grid">
+        <div class="bike-card" style="opacity:0.7;">
+          <div class="bike-card-header"><div><div style="font-size:13px;font-weight:500;">TrailBlazer X9</div><div class="brand">ApexRide</div></div><div class="badge badge-red">Rented</div></div>
+          <div class="bike-img-placeholder"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 24l8-12 4 5 6-9 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="bike-specs">
+            <div class="spec-row"><span class="spec-key">Suspension</span><span class="spec-val">Full</span></div>
+            <div class="spec-row"><span class="spec-key">Frame</span><span class="spec-val">Aluminum</span></div>
+            <div class="spec-row"><span class="spec-key">Gears</span><span class="spec-val">21</span></div>
+            <div class="spec-row"><span class="spec-key">Terrain</span><span class="spec-val">All-Mountain</span></div>
+          </div>
+          <div class="bike-footer"><div class="price">$24.99<span>/day</span></div><div class="btn btn-sm" style="color:var(--color-text-tertiary);cursor:default;">Not available</div></div>
+        </div>
+        <div class="bike-card" style="opacity:0.7;">
+          <div class="bike-card-header"><div><div style="font-size:13px;font-weight:500;">Summit Shredder</div><div class="brand">PeakForce</div></div><div class="badge badge-red">Rented</div></div>
+          <div class="bike-img-placeholder"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 24l8-12 4 5 6-9 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="bike-specs">
+            <div class="spec-row"><span class="spec-key">Suspension</span><span class="spec-val">Full</span></div>
+            <div class="spec-row"><span class="spec-key">Frame</span><span class="spec-val">Carbon Fiber</span></div>
+            <div class="spec-row"><span class="spec-key">Gears</span><span class="spec-val">27</span></div>
+            <div class="spec-row"><span class="spec-key">Terrain</span><span class="spec-val">Enduro</span></div>
+          </div>
+          <div class="bike-footer"><div class="price">$34.99<span>/day</span></div><div class="btn btn-sm" style="color:var(--color-text-tertiary);cursor:default;">Not available</div></div>
+        </div>
+        <div class="bike-card">
+          <div class="bike-card-header"><div><div style="font-size:13px;font-weight:500;">Ridge Runner</div><div class="brand">ApexRide</div></div><div class="badge badge-green">Available</div></div>
+          <div class="bike-img-placeholder"><svg viewBox="0 0 48 32" fill="none"><circle cx="10" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="38" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 24l8-12 4 5 6-9 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="bike-specs">
+            <div class="spec-row"><span class="spec-key">Suspension</span><span class="spec-val">Hardtail</span></div>
+            <div class="spec-row"><span class="spec-key">Frame</span><span class="spec-val">Steel</span></div>
+            <div class="spec-row"><span class="spec-key">Gears</span><span class="spec-val">18</span></div>
+            <div class="spec-row"><span class="spec-key">Terrain</span><span class="spec-val">Cross-Country</span></div>
+          </div>
+          <div class="bike-footer"><div class="price">$22.99<span>/day</span></div><div class="btn btn-primary btn-sm">Rent now</div></div>
+        </div>
+      </div>
+      <div style="height:8px;"></div>
+    </div>
+  </div>
+
+  <!-- 4. RENT MODAL -->
+  <div class="wf-section">
+    <div class="wf-label">4 — Rent confirmation modal</div>
+    <div class="wf-screen">
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <div class="modal-title">Confirm rental</div>
+            <div class="modal-close">✕</div>
+          </div>
+          <div class="modal-bike-info">
+            <h4>Ocean Breeze</h4>
+            <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;">Beach Cruiser</div>
+            <div class="modal-specs">
+              <div class="modal-spec">Color: <strong>Teal</strong></div>
+              <div class="modal-spec">Frame: <strong>Large</strong></div>
+              <div class="modal-spec">Rate: <strong>$16.99/day</strong></div>
+              <div class="modal-spec">Status: <strong style="color:#3B6D11;">Available</strong></div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;">By confirming, this bike will be marked as rented and removed from available inventory.</div>
+          <div class="modal-actions">
+            <div class="btn btn-sm" style="flex:1;text-align:center;">Cancel</div>
+            <div class="btn btn-primary btn-sm" style="flex:1;text-align:center;">Confirm rental</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ACCESSORIES PAGE -->
+  <div class="wf-section">
+    <div class="wf-label">5 — Accessories shop</div>
+    <div class="wf-screen">
+      <div class="nav">
+        <div class="nav-logo"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M6 11l2-6 2 2 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+        <div class="nav-links"><div class="nav-link">Beach Cruisers</div><div class="nav-link">Mountain Bikes</div><div class="nav-link active">Accessories</div></div>
+        <div class="nav-actions"><div class="btn btn-sm">Staff login</div></div>
+      </div>
+      <div class="filter-bar" style="border-bottom:none;padding-bottom:8px;">
+        <span>Filter by bike:</span>
+        <div class="chip active">All</div>
+        <div class="chip">Beach</div>
+        <div class="chip">Mountain</div>
+        <div style="margin-left:auto;">
+          <select style="font-size:11px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);"><option>Category: All</option></select>
+        </div>
+      </div>
+      <div class="acc-layout">
+        <div class="acc-main">
+          <div class="section-title">6 accessories</div>
+          <div class="acc-grid">
+            <div class="acc-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><h4>Water Bottle</h4><div class="badge badge-gray">Hydration</div></div>
+              <p>Insulated 750ml bottle, fits all standard cages</p>
+              <div class="acc-card-footer">
+                <div style="font-size:12px;font-weight:500;">$8.99</div>
+                <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-val">1</div><div class="qty-btn">+</div></div>
+              </div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;">Stock: 12 left</div>
+            </div>
+            <div class="acc-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><h4>Helmet</h4><div class="badge badge-red" style="font-size:10px;padding:2px 6px;">Safety</div></div>
+              <p>Adjustable fit, vented design. M/L/XL sizes</p>
+              <div class="acc-card-footer">
+                <div style="font-size:12px;font-weight:500;">$12.99</div>
+                <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-val">0</div><div class="qty-btn">+</div></div>
+              </div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;">Stock: 5 left</div>
+            </div>
+            <div class="acc-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><h4>Bike Light</h4><div class="badge badge-purple" style="font-size:10px;padding:2px 6px;">Safety</div></div>
+              <p>Front LED + rear blinker set, USB rechargeable</p>
+              <div class="acc-card-footer">
+                <div style="font-size:12px;font-weight:500;">$9.99</div>
+                <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-val">1</div><div class="qty-btn">+</div></div>
+              </div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;">Stock: 8 left</div>
+            </div>
+            <div class="acc-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><h4>Saddle Bag</h4><div class="badge badge-gray" style="font-size:10px;padding:2px 6px;">Storage</div></div>
+              <p>Under-seat bag with repair kit included</p>
+              <div class="acc-card-footer">
+                <div style="font-size:12px;font-weight:500;">$14.99</div>
+                <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-val">0</div><div class="qty-btn">+</div></div>
+              </div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;">Stock: 3 left</div>
+            </div>
+          </div>
+        </div>
+        <div class="acc-sidebar">
+          <div class="cart-title">Order summary</div>
+          <div class="bundle-badge">Bundle deal applied — 10% off</div>
+          <div class="cart-item"><span class="cart-item-name">Water Bottle × 1</span><span class="cart-item-price">$8.99</span></div>
+          <div class="cart-item"><span class="cart-item-name">Bike Light × 1</span><span class="cart-item-price">$9.99</span></div>
+          <div class="cart-summary">
+            <div class="summary-row"><span>Subtotal</span><span>$18.98</span></div>
+            <div class="summary-row" style="color:#3B6D11;"><span>Bundle discount</span><span>−$1.90</span></div>
+            <div class="summary-row total"><span>Total</span><span>$17.08</span></div>
+          </div>
+          <div class="btn btn-primary" style="width:100%;text-align:center;margin-top:12px;font-size:12px;padding:7px;">Confirm order</div>
+          <div style="font-size:10px;color:var(--color-text-tertiary);text-align:center;margin-top:8px;">Add Water Bottle + Bike Light for bundle</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. ADMIN LOGIN -->
+  <div class="wf-section">
+    <div class="wf-label">6 — Staff login</div>
+    <div class="wf-screen">
+      <div class="nav">
+        <div class="nav-logo"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M6 11l2-6 2 2 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal</div>
+      </div>
+      <div class="login-wrap">
+        <div class="login-card">
+          <h2>Staff login</h2>
+          <div class="sub">Access admin dashboard and inventory management</div>
+          <div class="form-field"><label>Email address</label><input type="email" placeholder="staff@pedalpal.com" /></div>
+          <div class="form-field"><label>Password</label><input type="password" placeholder="••••••••" /></div>
+          <div class="btn btn-primary" style="width:100%;text-align:center;padding:7px;font-size:13px;margin-top:4px;">Sign in</div>
+          <div style="font-size:11px;color:var(--color-text-tertiary);text-align:center;margin-top:12px;">Customer? No account needed to browse and rent.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. ADMIN DASHBOARD -->
+  <div class="wf-section">
+    <div class="wf-label">7 — Admin dashboard</div>
+    <div class="wf-screen">
+      <div class="nav">
+        <div class="nav-logo"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><circle cx="12.5" cy="11" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M6 11l2-6 2 2 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PedalPal — Admin</div>
+        <div class="nav-actions"><div class="btn btn-sm">Sign out</div></div>
+      </div>
+      <div class="admin-layout">
+        <div class="admin-sidebar">
+          <div class="admin-nav-item active">
+            <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+            Overview
+          </div>
+          <div class="admin-nav-item">
+            <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Rental log
+          </div>
+          <div class="admin-nav-item">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M2 4h10M2 7h7M2 10h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Inventory
+          </div>
+          <div class="admin-nav-item">
+            <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M2 12c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Staff accounts
+          </div>
+          <div class="divider" style="margin: 8px 0;"></div>
+          <div class="admin-nav-item" style="color:var(--color-text-danger);">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M7 1v6M4 3.5C2.3 4.5 1 6.1 1 8c0 3.3 2.7 6 6 6s6-2.7 6-6c0-1.9-1.3-3.5-3-4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Settings
+          </div>
+        </div>
+        <div class="admin-main">
+          <div class="admin-page-title">Overview</div>
+          <div class="stat-grid">
+            <div class="stat-card"><label>Total bikes</label><div class="stat-val">12</div></div>
+            <div class="stat-card"><label>Currently rented</label><div class="stat-val" style="color:#534AB7;">7</div></div>
+            <div class="stat-card"><label>Available</label><div class="stat-val" style="color:#3B6D11;">5</div></div>
+          </div>
+          <div class="section-title">Recent activity</div>
+          <table class="admin-table">
+            <thead><tr><th>Bike</th><th>Type</th><th>Action</th><th>Time</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>TrailBlazer X9</td><td><span class="badge badge-purple" style="font-size:10px;">Mountain</span></td><td><span class="badge badge-red" style="font-size:10px;">Rented</span></td><td style="color:var(--color-text-secondary);">2 min ago</td><td><div class="btn btn-sm">Mark returned</div></td></tr>
+              <tr><td>Ocean Breeze</td><td><span class="badge badge-green" style="font-size:10px;">Beach</span></td><td><span class="badge badge-red" style="font-size:10px;">Rented</span></td><td style="color:var(--color-text-secondary);">18 min ago</td><td><div class="btn btn-sm">Mark returned</div></td></tr>
+              <tr><td>Ridge Runner</td><td><span class="badge badge-purple" style="font-size:10px;">Mountain</span></td><td><span class="badge badge-green" style="font-size:10px;">Returned</span></td><td style="color:var(--color-text-secondary);">1 hr ago</td><td></td></tr>
+            </tbody>
+          </table>
+          <div class="divider"></div>
+          <div class="section-title">Danger zone</div>
+          <div class="danger-zone">
+            <div><strong>Reset all inventory</strong><p>Marks all bikes as available and restores accessory stock to defaults.</p></div>
+            <div class="btn btn-danger btn-sm">Reset all</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. TOAST STATES -->
+  <div class="wf-section">
+    <div class="wf-label">8 — Toast notifications</div>
+    <div class="wf-screen">
+      <div class="toast-wrapper">
+        <div class="toast toast-success">
+          <div class="toast-icon" style="background:#EAF3DE;">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#3B6D11" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span><strong>Bike rented!</strong> Ocean Breeze is now reserved.</span>
+        </div>
+        <div class="toast toast-error">
+          <div class="toast-icon" style="background:#FCEBEB;">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 3l4 4M7 3l-4 4" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span><strong>Not available.</strong> This bike was just rented.</span>
+        </div>
+        <div class="toast toast-success">
+          <div class="toast-icon" style="background:#EAF3DE;">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#3B6D11" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span><strong>Order confirmed!</strong> Bundle discount applied.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
